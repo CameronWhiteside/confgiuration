@@ -1,0 +1,21 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "confgiuration",
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2025-01-01",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".open-next/assets"
+	},
+	"routes": [
+		{ "pattern": "confgiuration.com", "custom_domain": true },
+		{ "pattern": "www.confgiuration.com", "custom_domain": true }
+	],
+	"observability": {
+		"enabled": true
+	}
+}
