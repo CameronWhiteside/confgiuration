@@ -99,7 +99,7 @@ export function ToolLayout({ toolId, children }: ToolLayoutProps) {
 							</li>
 							<li aria-hidden="true" className="text-foreground-muted">/</li>
 							<li aria-current="page">
-								<span className="text-foreground font-medium">{tool.name}</span>
+								<span className="text-foreground font-medium">{tool.shortName}</span>
 							</li>
 						</ol>
 					</nav>
@@ -188,7 +188,7 @@ export function ToolLayout({ toolId, children }: ToolLayoutProps) {
 													</div>
 													<div className="flex-1 min-w-0">
 														<div className="font-medium text-sm text-foreground truncate">
-															{relatedTool.name}
+															{relatedTool.shortName}
 														</div>
 														<div className="text-xs text-foreground-muted truncate">
 															{relatedTool.description}
@@ -237,7 +237,7 @@ export function ToolLayout({ toolId, children }: ToolLayoutProps) {
 												</div>
 												<div className="flex-1 min-w-0">
 													<div className="font-medium text-sm text-foreground truncate">
-														{otherTool.name}
+														{otherTool.shortName}
 													</div>
 													<div className="text-xs text-foreground-muted truncate">
 														{otherTool.description}

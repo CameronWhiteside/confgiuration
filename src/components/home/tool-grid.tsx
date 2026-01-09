@@ -63,7 +63,7 @@ function ToolCard({ tool }: { tool: Tool }) {
 					{/* Title + Arrow */}
 					<div className="flex items-center justify-between mb-2">
 						<h3 className="font-mono text-lg font-semibold text-foreground">
-							{tool.name}
+							{tool.shortName}
 						</h3>
 						<ArrowRight className="w-5 h-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
 					</div>

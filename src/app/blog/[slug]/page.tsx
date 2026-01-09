@@ -144,7 +144,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 										className="hover:text-foreground transition-colors flex items-center gap-1"
 									>
 										<Wrench className="w-3 h-3" />
-										{tool.name}
+										{tool.shortName}
 									</Link>
 									<span>/</span>
 								</>
@@ -190,7 +190,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 											Related tool
 										</p>
 										<p className="font-medium text-foreground group-hover:text-primary transition-colors">
-											{tool.name} - {tool.description}
+											{tool.shortName} - {tool.description}
 										</p>
 									</div>
 									<ArrowRight className="w-5 h-5 text-foreground-muted group-hover:text-primary group-hover:translate-x-1 transition-all" />
@@ -265,7 +265,7 @@ function RelatedArticleCard({ article }: { article: Article }) {
 				{tool && (
 					<>
 						<Wrench className="w-3 h-3" />
-						<span>{tool.name}</span>
+						<span>{tool.shortName}</span>
 					</>
 				)}
 			</div>

@@ -64,7 +64,7 @@ export function Footer() {
 												href={tool.href}
 												className="text-sm text-foreground-muted hover:text-foreground transition-colors"
 											>
-												{tool.name}
+												{tool.shortName}
 											</Link>
 										</li>
 									))}

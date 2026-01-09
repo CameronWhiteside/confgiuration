@@ -74,7 +74,7 @@ export default function BlogPage() {
 											className="group flex items-center gap-2"
 										>
 											<h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-												{tool.name}
+												{tool.shortName}
 											</h2>
 											<ArrowRight className="w-4 h-4 text-foreground-muted group-hover:text-primary group-hover:translate-x-1 transition-all" />
 										</Link>

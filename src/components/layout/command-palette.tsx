@@ -126,7 +126,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 											return (
 												<Command.Item
 													key={tool.id}
-													value={`${tool.name} ${tool.keywords.join(" ")}`}
+													value={`${tool.name} ${tool.shortName} ${tool.keywords.join(" ")}`}
 													onSelect={() => handleSelect(tool.href)}
 													className={cn(
 														"flex items-center gap-3 px-3 py-3 rounded-lg cursor-pointer",
@@ -147,7 +147,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 														<Icon className="w-5 h-5" />
 													</div>
 													<div className="flex-1 min-w-0">
-														<div className="font-medium">{tool.name}</div>
+														<div className="font-medium">{tool.shortName}</div>
 														<div className="text-sm text-foreground-muted truncate">
 															{tool.description}
 														</div>
