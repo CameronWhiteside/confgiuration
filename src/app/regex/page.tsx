@@ -1,12 +1,27 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ToolLayout } from "@/components/layout/tool-layout";
+import { Textarea } from "@/components/ui/textarea";
+
+import { Card } from "@/components/ui/card";
+import { AlertCircle, CheckCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Match {
 	match: string;
 	index: number;
 	groups?: Record<string, string>;
 }
+
+const FLAGS = [
+	{ flag: "g", name: "global", description: "Find all matches" },
+	{ flag: "i", name: "case-insensitive", description: "Ignore case" },
+	{ flag: "m", name: "multiline", description: "^ and $ match line boundaries" },
+	{ flag: "s", name: "dotAll", description: ". matches newlines" },
+	{ flag: "u", name: "unicode", description: "Unicode support" },
+];
 
 export default function RegexPage() {
 	const [pattern, setPattern] = useState("");
@@ -31,7 +46,6 @@ export default function RegexPage() {
 						index: match.index,
 						groups: match.groups,
 					});
-					// Prevent infinite loop on zero-length matches
 					if (match[0].length === 0) {
 						regex.lastIndex++;
 					}
@@ -47,7 +61,6 @@ export default function RegexPage() {
 				}
 			}
 
-			// Build highlighted text
 			let lastIndex = 0;
 			const parts: { text: string; isMatch: boolean }[] = [];
 
@@ -80,109 +93,147 @@ export default function RegexPage() {
 	};
 
 	return (
-		<div>
-			<h1 className="font-mono text-2xl font-bold mb-6">Regex Tester</h1>
-
-			<div className="mb-6">
-				<label className="block text-sm text-muted mb-2">Pattern</label>
-				<div className="flex gap-2">
-					<div className="flex-1 flex items-center bg-card border border-border rounded-lg overflow-hidden">
-						<span className="px-3 text-muted">/</span>
-						<input
-							type="text"
-							value={pattern}
-							onChange={(e) => setPattern(e.target.value)}
-							placeholder="[a-z]+"
-							className="flex-1 border-0 bg-transparent"
-						/>
-						<span className="px-3 text-muted">/</span>
-					</div>
-					<div className="flex gap-1">
-						{["g", "i", "m", "s", "u"].map((flag) => (
-							<button
-								key={flag}
-								onClick={() => toggleFlag(flag)}
-								className={`w-10 h-10 rounded-lg font-mono text-sm transition-colors ${
-									flags.includes(flag)
-										? "bg-accent text-background"
-										: "bg-card border border-border text-muted hover:text-foreground"
-								}`}
-								title={
-									{
-										g: "global",
-										i: "case-insensitive",
-										m: "multiline",
-										s: "dotAll",
-										u: "unicode",
-									}[flag]
-								}
-							>
-								{flag}
-							</button>
-						))}
+		<ToolLayout toolId="regex">
+			<div className="space-y-6">
+				{/* Pattern Input */}
+				<div>
+					<label className="block text-sm font-medium text-foreground-muted mb-2">
+						Pattern
+					</label>
+					<div className="flex gap-2">
+						<div className="flex-1 flex items-center bg-card border border-border rounded-lg overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10">
+							<span className="px-3 text-foreground-muted font-mono">/</span>
+							<input
+								type="text"
+								value={pattern}
+								onChange={(e) => setPattern(e.target.value)}
+								placeholder="[a-z]+"
+								className="flex-1 py-2.5 bg-transparent border-0 text-sm font-mono text-foreground focus:outline-none placeholder:text-foreground-muted/60"
+							/>
+							<span className="px-3 text-foreground-muted font-mono">/</span>
+						</div>
+						<div className="flex gap-1">
+							{FLAGS.map(({ flag, name }) => (
+								<button
+									key={flag}
+									onClick={() => toggleFlag(flag)}
+									title={name}
+									className={cn(
+										"w-10 h-10 rounded-lg font-mono text-sm transition-colors",
+										flags.includes(flag)
+											? "bg-gradient-to-r from-accent-purple to-accent-pink text-white"
+											: "bg-card border border-border text-foreground-muted hover:text-foreground hover:border-border-hover"
+									)}
+								>
+									{flag}
+								</button>
+							))}
+						</div>
 					</div>
 				</div>
-			</div>
 
-			{error && (
-				<div className="mb-4 p-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm font-mono">
-					{error}
-				</div>
-			)}
+				{/* Error Display */}
+				<AnimatePresence>
+					{error && (
+						<motion.div
+							initial={{ opacity: 0, y: -10 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -10 }}
+						>
+							<Card hover={false} className="bg-error-bg border-error/20 p-4">
+								<div className="flex items-center gap-3 text-error">
+									<AlertCircle className="w-5 h-5 flex-shrink-0" />
+									<code className="text-sm">{error}</code>
+								</div>
+							</Card>
+						</motion.div>
+					)}
+				</AnimatePresence>
 
-			<div className="mb-6">
-				<label className="block text-sm text-muted mb-2">Test String</label>
-				<textarea
+				{/* Test String */}
+				<Textarea
+					label="Test String"
 					value={testString}
 					onChange={(e) => setTestString(e.target.value)}
 					placeholder="Enter text to test against..."
-					className="w-full h-40 font-mono text-sm"
+					className="min-h-[120px]"
 				/>
-			</div>
 
-			{highlightedText && highlightedText.length > 0 && (
-				<div className="mb-6">
-					<label className="block text-sm text-muted mb-2">
-						Highlighted Matches ({matches.length} found)
-					</label>
-					<div className="p-4 rounded-lg bg-card border border-border font-mono text-sm whitespace-pre-wrap break-all">
-						{highlightedText.map((part, i) =>
-							part.isMatch ? (
-								<span key={i} className="bg-accent/30 text-accent rounded px-0.5">
-									{part.text}
-								</span>
-							) : (
-								<span key={i}>{part.text}</span>
-							)
-						)}
-					</div>
-				</div>
-			)}
-
-			{matches.length > 0 && (
-				<div>
-					<label className="block text-sm text-muted mb-2">Match Details</label>
-					<div className="space-y-2">
-						{matches.map((m, i) => (
-							<div
-								key={i}
-								className="p-3 rounded-lg bg-card border border-border font-mono text-sm"
-							>
-								<div className="flex items-center gap-4">
-									<span className="text-muted">#{i + 1}</span>
-									<span className="text-accent">{m.match}</span>
-									<span className="text-muted text-xs">index: {m.index}</span>
+				{/* Highlighted Matches */}
+				<AnimatePresence>
+					{highlightedText && highlightedText.length > 0 && (
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: 20 }}
+						>
+							<Card hover={false}>
+								<div className="flex items-center justify-between mb-3">
+									<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider">
+										Highlighted Matches
+									</h3>
+									<span className="flex items-center gap-2 text-sm text-success">
+										<CheckCircle className="w-4 h-4" />
+										{matches.length} {matches.length === 1 ? "match" : "matches"}
+									</span>
 								</div>
-								{m.groups && Object.keys(m.groups).length > 0 && (
-									<div className="mt-2 text-xs text-muted">
-										Groups: {JSON.stringify(m.groups)}
-									</div>
-								)}
-							</div>
-						))}
-					</div>
-				</div>
-			)}
-		</div>
+								<div className="bg-background-secondary rounded-lg p-4 font-mono text-sm whitespace-pre-wrap break-all">
+									{highlightedText.map((part, i) =>
+										part.isMatch ? (
+											<span
+												key={i}
+												className="bg-primary/20 text-primary rounded px-0.5"
+											>
+												{part.text}
+											</span>
+										) : (
+											<span key={i}>{part.text}</span>
+										)
+									)}
+								</div>
+							</Card>
+						</motion.div>
+					)}
+				</AnimatePresence>
+
+				{/* Match Details */}
+				<AnimatePresence>
+					{matches.length > 0 && (
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: 20 }}
+						>
+							<Card hover={false}>
+								<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider mb-3">
+									Match Details
+								</h3>
+								<div className="space-y-2">
+									{matches.map((m, i) => (
+										<div
+											key={i}
+											className="bg-background-secondary rounded-lg p-3 font-mono text-sm"
+										>
+											<div className="flex items-center gap-4">
+												<span className="text-foreground-muted">#{i + 1}</span>
+												<span className="text-primary font-medium">{m.match}</span>
+												<span className="text-foreground-muted text-xs">
+													index: {m.index}
+												</span>
+											</div>
+											{m.groups && Object.keys(m.groups).length > 0 && (
+												<div className="mt-2 text-xs text-foreground-muted">
+													Groups: {JSON.stringify(m.groups)}
+												</div>
+											)}
+										</div>
+									))}
+								</div>
+							</Card>
+						</motion.div>
+					)}
+				</AnimatePresence>
+			</div>
+		</ToolLayout>
 	);
 }

@@ -1,0 +1,66 @@
+{
+	"name": "confgiuration - Developer Tools",
+	"short_name": "confgiuration",
+	"description": "Free online developer tools for encoding, formatting, generating, and transforming data.",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#fafafa",
+	"theme_color": "#a855f7",
+	"orientation": "portrait-primary",
+	"scope": "/",
+	"lang": "en",
+	"categories": ["developer tools", "utilities", "productivity"],
+	"icons": [
+		{
+			"src": "/icon-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "/icon-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any maskable"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "/screenshot-wide.png",
+			"sizes": "1280x720",
+			"type": "image/png",
+			"form_factor": "wide",
+			"label": "Developer Tools Homepage"
+		},
+		{
+			"src": "/screenshot-narrow.png",
+			"sizes": "750x1334",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "JSON Formatter Tool"
+		}
+	],
+	"shortcuts": [
+		{
+			"name": "JSON Formatter",
+			"short_name": "JSON",
+			"description": "Format and validate JSON",
+			"url": "/json",
+			"icons": [{ "src": "/icons/json.png", "sizes": "96x96" }]
+		},
+		{
+			"name": "Base64 Encoder",
+			"short_name": "Base64",
+			"description": "Encode and decode Base64",
+			"url": "/base64",
+			"icons": [{ "src": "/icons/base64.png", "sizes": "96x96" }]
+		},
+		{
+			"name": "UUID Generator",
+			"short_name": "UUID",
+			"description": "Generate UUIDs",
+			"url": "/uuid",
+			"icons": [{ "src": "/icons/uuid.png", "sizes": "96x96" }]
+		}
+	]
+}

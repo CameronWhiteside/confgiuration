@@ -1,122 +1,174 @@
 "use client";
 
 import { useState } from "react";
-
-type Mode = "encode" | "decode";
+import { motion, AnimatePresence } from "framer-motion";
+import { ToolLayout } from "@/components/layout/tool-layout";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { AlertCircle } from "lucide-react";
 
 export default function Base64Page() {
-	const [input, setInput] = useState("");
+	const [textInput, setTextInput] = useState("");
+	const [base64Input, setBase64Input] = useState("");
 	const [output, setOutput] = useState("");
 	const [error, setError] = useState("");
-	const [mode, setMode] = useState<Mode>("encode");
+	const [mode, setMode] = useState<"encode" | "decode">("encode");
 
-	const convert = () => {
+	const encode = () => {
 		setError("");
 		try {
-			if (mode === "encode") {
-				// Handle unicode properly
-				const bytes = new TextEncoder().encode(input);
-				const binary = Array.from(bytes)
-					.map((b) => String.fromCharCode(b))
-					.join("");
-				setOutput(btoa(binary));
-			} else {
-				const binary = atob(input);
-				const bytes = new Uint8Array(binary.length);
-				for (let i = 0; i < binary.length; i++) {
-					bytes[i] = binary.charCodeAt(i);
-				}
-				setOutput(new TextDecoder().decode(bytes));
-			}
+			const bytes = new TextEncoder().encode(textInput);
+			const binary = Array.from(bytes)
+				.map((b) => String.fromCharCode(b))
+				.join("");
+			setOutput(btoa(binary));
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Conversion failed");
+			setError(e instanceof Error ? e.message : "Encoding failed");
 			setOutput("");
 		}
 	};
 
-	const copy = () => {
-		navigator.clipboard.writeText(output);
+	const decode = () => {
+		setError("");
+		try {
+			const binary = atob(base64Input);
+			const bytes = new Uint8Array(binary.length);
+			for (let i = 0; i < binary.length; i++) {
+				bytes[i] = binary.charCodeAt(i);
+			}
+			setOutput(new TextDecoder().decode(bytes));
+		} catch {
+			setError("Invalid Base64 string");
+			setOutput("");
+		}
+	};
+
+	const handleAction = () => {
+		if (mode === "encode") {
+			encode();
+		} else {
+			decode();
+		}
 	};
 
 	return (
-		<div>
-			<h1 className="font-mono text-2xl font-bold mb-6">Base64</h1>
+		<ToolLayout toolId="base64">
+			<Tabs
+				defaultValue="encode"
+				onValueChange={(v) => {
+					setMode(v as "encode" | "decode");
+					setError("");
+					setOutput("");
+				}}
+			>
+				<TabsList className="mb-6">
+					<TabsTrigger value="encode">Encode</TabsTrigger>
+					<TabsTrigger value="decode">Decode</TabsTrigger>
+				</TabsList>
 
-			<div className="flex gap-2 mb-6">
-				<button
-					onClick={() => setMode("encode")}
-					className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-						mode === "encode"
-							? "bg-accent text-background"
-							: "bg-card border border-border text-foreground hover:bg-card-hover"
-					}`}
-				>
-					Encode
-				</button>
-				<button
-					onClick={() => setMode("decode")}
-					className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-						mode === "decode"
-							? "bg-accent text-background"
-							: "bg-card border border-border text-foreground hover:bg-card-hover"
-					}`}
-				>
-					Decode
-				</button>
-			</div>
+				<TabsContent value="encode">
+					<div className="space-y-6">
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+							<Textarea
+								label="Text Input"
+								value={textInput}
+								onChange={(e) => setTextInput(e.target.value)}
+								placeholder="Enter text to encode..."
+								className="min-h-[200px]"
+							/>
 
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<div>
-					<label className="block text-sm text-muted mb-2">
-						{mode === "encode" ? "Text Input" : "Base64 Input"}
-					</label>
-					<textarea
-						value={input}
-						onChange={(e) => setInput(e.target.value)}
-						placeholder={
-							mode === "encode"
-								? "Enter text to encode..."
-								: "Enter Base64 to decode..."
-						}
-						className="w-full h-64 font-mono text-sm"
-					/>
-				</div>
+							<div>
+								<div className="flex items-center justify-between mb-2">
+									<label className="block text-sm font-medium text-foreground-muted">
+										Base64 Output
+									</label>
+									{output && <CopyButton text={output} variant="ghost" />}
+								</div>
+								<textarea
+									value={output}
+									readOnly
+									placeholder="Encoded result will appear here..."
+									className="w-full min-h-[200px] bg-card border border-border rounded-lg px-3 py-3 text-sm font-mono text-foreground placeholder:text-foreground-muted/60 focus:outline-none break-all"
+								/>
+							</div>
+						</div>
 
-				<div>
-					<label className="block text-sm text-muted mb-2">
-						{mode === "encode" ? "Base64 Output" : "Text Output"}
-					</label>
-					<textarea
-						value={output}
-						readOnly
-						placeholder="Output will appear here..."
-						className="w-full h-64 font-mono text-sm"
-					/>
-				</div>
-			</div>
+						<AnimatePresence>
+							{error && (
+								<motion.div
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+								>
+									<Card hover={false} className="bg-error-bg border-error/20 p-4">
+										<div className="flex items-center gap-3 text-error">
+											<AlertCircle className="w-5 h-5 flex-shrink-0" />
+											<code className="text-sm">{error}</code>
+										</div>
+									</Card>
+								</motion.div>
+							)}
+						</AnimatePresence>
 
-			{error && (
-				<div className="mt-4 p-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm font-mono">
-					{error}
-				</div>
-			)}
+						<Button onClick={handleAction} disabled={!textInput}>
+							Encode
+						</Button>
+					</div>
+				</TabsContent>
 
-			<div className="mt-6 flex gap-4">
-				<button
-					onClick={convert}
-					className="px-4 py-2 bg-accent text-background rounded-lg font-medium hover:bg-accent-hover"
-				>
-					{mode === "encode" ? "Encode" : "Decode"}
-				</button>
+				<TabsContent value="decode">
+					<div className="space-y-6">
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+							<Textarea
+								label="Base64 Input"
+								value={base64Input}
+								onChange={(e) => setBase64Input(e.target.value)}
+								placeholder="Enter Base64 to decode..."
+								className="min-h-[200px]"
+							/>
 
-				<button
-					onClick={copy}
-					disabled={!output}
-					className="px-4 py-2 bg-card border border-border text-foreground rounded-lg font-medium hover:bg-card-hover disabled:opacity-50"
-				>
-					Copy
-				</button>
-			</div>
-		</div>
+							<div>
+								<div className="flex items-center justify-between mb-2">
+									<label className="block text-sm font-medium text-foreground-muted">
+										Text Output
+									</label>
+									{output && <CopyButton text={output} variant="ghost" />}
+								</div>
+								<textarea
+									value={output}
+									readOnly
+									placeholder="Decoded result will appear here..."
+									className="w-full min-h-[200px] bg-card border border-border rounded-lg px-3 py-3 text-sm font-mono text-foreground placeholder:text-foreground-muted/60 focus:outline-none"
+								/>
+							</div>
+						</div>
+
+						<AnimatePresence>
+							{error && (
+								<motion.div
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+								>
+									<Card hover={false} className="bg-error-bg border-error/20 p-4">
+										<div className="flex items-center gap-3 text-error">
+											<AlertCircle className="w-5 h-5 flex-shrink-0" />
+											<code className="text-sm">{error}</code>
+										</div>
+									</Card>
+								</motion.div>
+							)}
+						</AnimatePresence>
+
+						<Button onClick={handleAction} disabled={!base64Input}>
+							Decode
+						</Button>
+					</div>
+				</TabsContent>
+			</Tabs>
+		</ToolLayout>
 	);
 }

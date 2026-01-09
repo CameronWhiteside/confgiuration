@@ -1,0 +1,75 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="orb1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="orb2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ec4899" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Decorative orbs -->
+  <circle cx="1000" cy="100" r="300" fill="url(#orb1)"/>
+  <circle cx="200" cy="530" r="250" fill="url(#orb2)"/>
+  
+  <!-- Grid pattern -->
+  <g opacity="0.05">
+    <line x1="200" y1="0" x2="200" y2="630" stroke="#a855f7" stroke-width="1"/>
+    <line x1="400" y1="0" x2="400" y2="630" stroke="#a855f7" stroke-width="1"/>
+    <line x1="600" y1="0" x2="600" y2="630" stroke="#a855f7" stroke-width="1"/>
+    <line x1="800" y1="0" x2="800" y2="630" stroke="#a855f7" stroke-width="1"/>
+    <line x1="1000" y1="0" x2="1000" y2="630" stroke="#a855f7" stroke-width="1"/>
+    <line x1="0" y1="157" x2="1200" y2="157" stroke="#a855f7" stroke-width="1"/>
+    <line x1="0" y1="315" x2="1200" y2="315" stroke="#a855f7" stroke-width="1"/>
+    <line x1="0" y1="472" x2="1200" y2="472" stroke="#a855f7" stroke-width="1"/>
+  </g>
+  
+  <!-- Logo mark -->
+  <rect x="80" y="235" width="80" height="80" rx="16" fill="url(#accent)"/>
+  <text x="120" y="290" font-family="monospace" font-size="36" font-weight="bold" fill="white" text-anchor="middle">cf</text>
+  
+  <!-- Brand name -->
+  <text x="180" y="295" font-family="system-ui, sans-serif" font-size="64" font-weight="bold" fill="white">confg</text>
+  <text x="430" y="295" font-family="system-ui, sans-serif" font-size="64" font-weight="bold" fill="#a855f7">i</text>
+  <text x="455" y="295" font-family="system-ui, sans-serif" font-size="64" font-weight="bold" fill="white">uration</text>
+  
+  <!-- Tagline -->
+  <text x="80" y="365" font-family="system-ui, sans-serif" font-size="28" fill="#a1a1aa">Free Online Developer Tools</text>
+  
+  <!-- Feature pills -->
+  <g transform="translate(80, 420)">
+    <rect x="0" y="0" width="120" height="40" rx="20" fill="#27272a"/>
+    <text x="60" y="26" font-family="system-ui, sans-serif" font-size="16" fill="#a1a1aa" text-anchor="middle">Base64</text>
+    
+    <rect x="135" y="0" width="100" height="40" rx="20" fill="#27272a"/>
+    <text x="185" y="26" font-family="system-ui, sans-serif" font-size="16" fill="#a1a1aa" text-anchor="middle">JSON</text>
+    
+    <rect x="250" y="0" width="100" height="40" rx="20" fill="#27272a"/>
+    <text x="300" y="26" font-family="system-ui, sans-serif" font-size="16" fill="#a1a1aa" text-anchor="middle">UUID</text>
+    
+    <rect x="365" y="0" width="100" height="40" rx="20" fill="#27272a"/>
+    <text x="415" y="26" font-family="system-ui, sans-serif" font-size="16" fill="#a1a1aa" text-anchor="middle">Hash</text>
+    
+    <rect x="480" y="0" width="100" height="40" rx="20" fill="#27272a"/>
+    <text x="530" y="26" font-family="system-ui, sans-serif" font-size="16" fill="#a1a1aa" text-anchor="middle">JWT</text>
+    
+    <rect x="595" y="0" width="120" height="40" rx="20" fill="#27272a"/>
+    <text x="655" y="26" font-family="system-ui, sans-serif" font-size="16" fill="#a1a1aa" text-anchor="middle">+14 more</text>
+  </g>
+  
+  <!-- URL -->
+  <text x="80" y="550" font-family="monospace" font-size="20" fill="#71717a">confgiuration.dev</text>
+</svg>

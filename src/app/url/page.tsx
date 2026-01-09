@@ -1,125 +1,178 @@
 "use client";
 
 import { useState } from "react";
-
-type Mode = "encode" | "decode";
+import { motion, AnimatePresence } from "framer-motion";
+import { ToolLayout } from "@/components/layout/tool-layout";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { AlertCircle } from "lucide-react";
 
 export default function UrlPage() {
-	const [input, setInput] = useState("");
+	const [encodeInput, setEncodeInput] = useState("");
+	const [decodeInput, setDecodeInput] = useState("");
 	const [output, setOutput] = useState("");
 	const [error, setError] = useState("");
-	const [mode, setMode] = useState<Mode>("encode");
-	const [encodeComponent, setEncodeComponent] = useState(true);
+	const [mode, setMode] = useState<"encode" | "decode">("encode");
+	const [componentMode, setComponentMode] = useState(true);
 
-	const convert = () => {
+	const encode = () => {
 		setError("");
 		try {
-			if (mode === "encode") {
-				setOutput(
-					encodeComponent ? encodeURIComponent(input) : encodeURI(input)
-				);
-			} else {
-				setOutput(
-					encodeComponent ? decodeURIComponent(input) : decodeURI(input)
-				);
-			}
+			setOutput(componentMode ? encodeURIComponent(encodeInput) : encodeURI(encodeInput));
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Conversion failed");
+			setError(e instanceof Error ? e.message : "Encoding failed");
 			setOutput("");
 		}
 	};
 
-	const copy = () => {
-		navigator.clipboard.writeText(output);
+	const decode = () => {
+		setError("");
+		try {
+			setOutput(componentMode ? decodeURIComponent(decodeInput) : decodeURI(decodeInput));
+		} catch (e) {
+			setError(e instanceof Error ? e.message : "Decoding failed");
+			setOutput("");
+		}
+	};
+
+	const handleAction = () => {
+		if (mode === "encode") {
+			encode();
+		} else {
+			decode();
+		}
 	};
 
 	return (
-		<div>
-			<h1 className="font-mono text-2xl font-bold mb-6">URL Encode/Decode</h1>
+		<ToolLayout toolId="url">
+			<Tabs
+				defaultValue="encode"
+				onValueChange={(v) => {
+					setMode(v as "encode" | "decode");
+					setError("");
+					setOutput("");
+				}}
+			>
+				<div className="flex flex-wrap items-center gap-4 mb-6">
+					<TabsList>
+						<TabsTrigger value="encode">Encode</TabsTrigger>
+						<TabsTrigger value="decode">Decode</TabsTrigger>
+					</TabsList>
 
-			<div className="flex flex-wrap gap-4 mb-6">
-				<div className="flex gap-2">
-					<button
-						onClick={() => setMode("encode")}
-						className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-							mode === "encode"
-								? "bg-accent text-background"
-								: "bg-card border border-border text-foreground hover:bg-card-hover"
-						}`}
-					>
-						Encode
-					</button>
-					<button
-						onClick={() => setMode("decode")}
-						className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-							mode === "decode"
-								? "bg-accent text-background"
-								: "bg-card border border-border text-foreground hover:bg-card-hover"
-						}`}
-					>
-						Decode
-					</button>
+					<label className="flex items-center gap-2 text-sm">
+						<input
+							type="checkbox"
+							checked={componentMode}
+							onChange={(e) => setComponentMode(e.target.checked)}
+							className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+						/>
+						<span className="text-foreground-muted">Component mode (encode all special chars)</span>
+					</label>
 				</div>
 
-				<label className="flex items-center gap-2 text-sm">
-					<input
-						type="checkbox"
-						checked={encodeComponent}
-						onChange={(e) => setEncodeComponent(e.target.checked)}
-						className="rounded"
-					/>
-					<span className="text-muted">Component mode (encode all special chars)</span>
-				</label>
-			</div>
+				<TabsContent value="encode">
+					<div className="space-y-6">
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+							<Textarea
+								label="Text Input"
+								value={encodeInput}
+								onChange={(e) => setEncodeInput(e.target.value)}
+								placeholder="hello world & foo=bar"
+								className="min-h-[200px]"
+							/>
 
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<div>
-					<label className="block text-sm text-muted mb-2">Input</label>
-					<textarea
-						value={input}
-						onChange={(e) => setInput(e.target.value)}
-						placeholder={
-							mode === "encode"
-								? "hello world & foo=bar"
-								: "hello%20world%20%26%20foo%3Dbar"
-						}
-						className="w-full h-64 font-mono text-sm"
-					/>
-				</div>
+							<div>
+								<div className="flex items-center justify-between mb-2">
+									<label className="block text-sm font-medium text-foreground-muted">
+										URL Encoded Output
+									</label>
+									{output && <CopyButton text={output} variant="ghost" />}
+								</div>
+								<textarea
+									value={output}
+									readOnly
+									placeholder="Encoded result will appear here..."
+									className="w-full min-h-[200px] bg-card border border-border rounded-lg px-3 py-3 text-sm font-mono text-foreground placeholder:text-foreground-muted/60 focus:outline-none break-all"
+								/>
+							</div>
+						</div>
 
-				<div>
-					<label className="block text-sm text-muted mb-2">Output</label>
-					<textarea
-						value={output}
-						readOnly
-						placeholder="Output will appear here..."
-						className="w-full h-64 font-mono text-sm"
-					/>
-				</div>
-			</div>
+						<AnimatePresence>
+							{error && (
+								<motion.div
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+								>
+									<Card hover={false} className="bg-error-bg border-error/20 p-4">
+										<div className="flex items-center gap-3 text-error">
+											<AlertCircle className="w-5 h-5 flex-shrink-0" />
+											<code className="text-sm">{error}</code>
+										</div>
+									</Card>
+								</motion.div>
+							)}
+						</AnimatePresence>
 
-			{error && (
-				<div className="mt-4 p-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm font-mono">
-					{error}
-				</div>
-			)}
+						<Button onClick={handleAction} disabled={!encodeInput}>
+							Encode
+						</Button>
+					</div>
+				</TabsContent>
 
-			<div className="mt-6 flex gap-4">
-				<button
-					onClick={convert}
-					className="px-4 py-2 bg-accent text-background rounded-lg font-medium hover:bg-accent-hover"
-				>
-					{mode === "encode" ? "Encode" : "Decode"}
-				</button>
+				<TabsContent value="decode">
+					<div className="space-y-6">
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+							<Textarea
+								label="URL Encoded Input"
+								value={decodeInput}
+								onChange={(e) => setDecodeInput(e.target.value)}
+								placeholder="hello%20world%20%26%20foo%3Dbar"
+								className="min-h-[200px]"
+							/>
 
-				<button
-					onClick={copy}
-					disabled={!output}
-					className="px-4 py-2 bg-card border border-border text-foreground rounded-lg font-medium hover:bg-card-hover disabled:opacity-50"
-				>
-					Copy
-				</button>
-			</div>
-		</div>
+							<div>
+								<div className="flex items-center justify-between mb-2">
+									<label className="block text-sm font-medium text-foreground-muted">
+										Decoded Output
+									</label>
+									{output && <CopyButton text={output} variant="ghost" />}
+								</div>
+								<textarea
+									value={output}
+									readOnly
+									placeholder="Decoded result will appear here..."
+									className="w-full min-h-[200px] bg-card border border-border rounded-lg px-3 py-3 text-sm font-mono text-foreground placeholder:text-foreground-muted/60 focus:outline-none"
+								/>
+							</div>
+						</div>
+
+						<AnimatePresence>
+							{error && (
+								<motion.div
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+								>
+									<Card hover={false} className="bg-error-bg border-error/20 p-4">
+										<div className="flex items-center gap-3 text-error">
+											<AlertCircle className="w-5 h-5 flex-shrink-0" />
+											<code className="text-sm">{error}</code>
+										</div>
+									</Card>
+								</motion.div>
+							)}
+						</AnimatePresence>
+
+						<Button onClick={handleAction} disabled={!decodeInput}>
+							Decode
+						</Button>
+					</div>
+				</TabsContent>
+			</Tabs>
+		</ToolLayout>
 	);
 }

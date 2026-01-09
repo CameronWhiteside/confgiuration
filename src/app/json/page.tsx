@@ -1,6 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ToolLayout } from "@/components/layout/tool-layout";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
+import { CopyButton } from "@/components/ui/copy-button";
+import { Card } from "@/components/ui/card";
+import { AlertCircle } from "lucide-react";
 
 export default function JsonPage() {
 	const [input, setInput] = useState("");
@@ -30,78 +38,75 @@ export default function JsonPage() {
 		}
 	};
 
-	const copy = () => {
-		navigator.clipboard.writeText(output);
-	};
-
 	return (
-		<div>
-			<h1 className="font-mono text-2xl font-bold mb-6">JSON Formatter</h1>
-
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<div>
-					<label className="block text-sm text-muted mb-2">Input</label>
-					<textarea
+		<ToolLayout toolId="json">
+			<div className="space-y-6">
+				{/* Input/Output Grid */}
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+					<Textarea
+						label="Input"
 						value={input}
 						onChange={(e) => setInput(e.target.value)}
-						placeholder="Paste JSON here..."
-						className="w-full h-80 font-mono text-sm"
+						placeholder="Paste your JSON here..."
+						className="min-h-[300px]"
 					/>
+
+					<div>
+						<div className="flex items-center justify-between mb-2">
+							<label className="block text-sm font-medium text-foreground-muted">
+								Output
+							</label>
+							{output && <CopyButton text={output} variant="ghost" />}
+						</div>
+						<textarea
+							value={output}
+							readOnly
+							placeholder="Formatted JSON will appear here..."
+							className="w-full min-h-[300px] bg-card border border-border rounded-lg px-3 py-3 text-sm font-mono text-foreground placeholder:text-foreground-muted/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10"
+						/>
+					</div>
 				</div>
 
-				<div>
-					<label className="block text-sm text-muted mb-2">Output</label>
-					<textarea
-						value={output}
-						readOnly
-						placeholder="Formatted JSON will appear here..."
-						className="w-full h-80 font-mono text-sm"
-					/>
-				</div>
-			</div>
+				{/* Error Display */}
+				<AnimatePresence>
+					{error && (
+						<motion.div
+							initial={{ opacity: 0, y: -10 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -10 }}
+						>
+							<Card hover={false} className="bg-error-bg border-error/20 p-4">
+								<div className="flex items-center gap-3 text-error">
+									<AlertCircle className="w-5 h-5 flex-shrink-0" />
+									<code className="text-sm">{error}</code>
+								</div>
+							</Card>
+						</motion.div>
+					)}
+				</AnimatePresence>
 
-			{error && (
-				<div className="mt-4 p-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm font-mono">
-					{error}
-				</div>
-			)}
-
-			<div className="mt-6 flex flex-wrap items-center gap-4">
-				<div className="flex items-center gap-2">
-					<label className="text-sm text-muted">Indent:</label>
-					<select
+				{/* Controls */}
+				<div className="flex flex-wrap items-center gap-4">
+					<Select
+						label=""
 						value={indentSize}
 						onChange={(e) => setIndentSize(Number(e.target.value))}
-						className="bg-card border border-border rounded px-2 py-1 text-sm"
+						className="w-32"
 					>
 						<option value={2}>2 spaces</option>
 						<option value={4}>4 spaces</option>
 						<option value={1}>Tab</option>
-					</select>
+					</Select>
+
+					<Button onClick={format} disabled={!input}>
+						Format
+					</Button>
+
+					<Button variant="secondary" onClick={minify} disabled={!input}>
+						Minify
+					</Button>
 				</div>
-
-				<button
-					onClick={format}
-					className="px-4 py-2 bg-accent text-background rounded-lg font-medium hover:bg-accent-hover"
-				>
-					Format
-				</button>
-
-				<button
-					onClick={minify}
-					className="px-4 py-2 bg-card border border-border text-foreground rounded-lg font-medium hover:bg-card-hover"
-				>
-					Minify
-				</button>
-
-				<button
-					onClick={copy}
-					disabled={!output}
-					className="px-4 py-2 bg-card border border-border text-foreground rounded-lg font-medium hover:bg-card-hover disabled:opacity-50"
-				>
-					Copy
-				</button>
 			</div>
-		</div>
+		</ToolLayout>
 	);
 }

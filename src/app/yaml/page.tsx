@@ -1,115 +1,168 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import YAML from "yaml";
-
-type Mode = "yaml-to-json" | "json-to-yaml";
+import { ToolLayout } from "@/components/layout/tool-layout";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { AlertCircle } from "lucide-react";
 
 export default function YamlPage() {
-	const [input, setInput] = useState("");
+	const [yamlInput, setYamlInput] = useState("");
+	const [jsonInput, setJsonInput] = useState("");
 	const [output, setOutput] = useState("");
 	const [error, setError] = useState("");
-	const [mode, setMode] = useState<Mode>("yaml-to-json");
+	const [mode, setMode] = useState<"yaml-to-json" | "json-to-yaml">("yaml-to-json");
 
-	const convert = () => {
+	const convertYamlToJson = () => {
 		setError("");
 		try {
-			if (mode === "yaml-to-json") {
-				const parsed = YAML.parse(input);
-				setOutput(JSON.stringify(parsed, null, 2));
-			} else {
-				const parsed = JSON.parse(input);
-				setOutput(YAML.stringify(parsed, { indent: 2 }));
-			}
+			const parsed = YAML.parse(yamlInput);
+			setOutput(JSON.stringify(parsed, null, 2));
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Conversion failed");
+			setError(e instanceof Error ? e.message : "Invalid YAML");
 			setOutput("");
 		}
 	};
 
-	const copy = () => {
-		navigator.clipboard.writeText(output);
+	const convertJsonToYaml = () => {
+		setError("");
+		try {
+			const parsed = JSON.parse(jsonInput);
+			setOutput(YAML.stringify(parsed, { indent: 2 }));
+		} catch (e) {
+			setError(e instanceof Error ? e.message : "Invalid JSON");
+			setOutput("");
+		}
+	};
+
+	const handleConvert = () => {
+		if (mode === "yaml-to-json") {
+			convertYamlToJson();
+		} else {
+			convertJsonToYaml();
+		}
 	};
 
 	return (
-		<div>
-			<h1 className="font-mono text-2xl font-bold mb-6">YAML / JSON Converter</h1>
+		<ToolLayout toolId="yaml">
+			<Tabs
+				defaultValue="yaml-to-json"
+				onValueChange={(v) => {
+					setMode(v as "yaml-to-json" | "json-to-yaml");
+					setError("");
+					setOutput("");
+				}}
+			>
+				<TabsList className="mb-6">
+					<TabsTrigger value="yaml-to-json">YAML to JSON</TabsTrigger>
+					<TabsTrigger value="json-to-yaml">JSON to YAML</TabsTrigger>
+				</TabsList>
 
-			<div className="flex gap-2 mb-6">
-				<button
-					onClick={() => setMode("yaml-to-json")}
-					className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-						mode === "yaml-to-json"
-							? "bg-accent text-background"
-							: "bg-card border border-border text-foreground hover:bg-card-hover"
-					}`}
-				>
-					YAML → JSON
-				</button>
-				<button
-					onClick={() => setMode("json-to-yaml")}
-					className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-						mode === "json-to-yaml"
-							? "bg-accent text-background"
-							: "bg-card border border-border text-foreground hover:bg-card-hover"
-					}`}
-				>
-					JSON → YAML
-				</button>
-			</div>
+				<TabsContent value="yaml-to-json">
+					<div className="space-y-6">
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+							<Textarea
+								label="YAML Input"
+								value={yamlInput}
+								onChange={(e) => setYamlInput(e.target.value)}
+								placeholder="name: John&#10;age: 30&#10;items:&#10;  - one&#10;  - two"
+								className="min-h-[300px]"
+							/>
 
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<div>
-					<label className="block text-sm text-muted mb-2">
-						{mode === "yaml-to-json" ? "YAML Input" : "JSON Input"}
-					</label>
-					<textarea
-						value={input}
-						onChange={(e) => setInput(e.target.value)}
-						placeholder={
-							mode === "yaml-to-json"
-								? "name: John\nage: 30\nitems:\n  - one\n  - two"
-								: '{\n  "name": "John",\n  "age": 30\n}'
-						}
-						className="w-full h-80 font-mono text-sm"
-					/>
-				</div>
+							<div>
+								<div className="flex items-center justify-between mb-2">
+									<label className="block text-sm font-medium text-foreground-muted">
+										JSON Output
+									</label>
+									{output && <CopyButton text={output} variant="ghost" />}
+								</div>
+								<textarea
+									value={output}
+									readOnly
+									placeholder="JSON will appear here..."
+									className="w-full min-h-[300px] bg-card border border-border rounded-lg px-3 py-3 text-sm font-mono text-foreground placeholder:text-foreground-muted/60 focus:outline-none"
+								/>
+							</div>
+						</div>
 
-				<div>
-					<label className="block text-sm text-muted mb-2">
-						{mode === "yaml-to-json" ? "JSON Output" : "YAML Output"}
-					</label>
-					<textarea
-						value={output}
-						readOnly
-						placeholder="Output will appear here..."
-						className="w-full h-80 font-mono text-sm"
-					/>
-				</div>
-			</div>
+						<AnimatePresence>
+							{error && (
+								<motion.div
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+								>
+									<Card hover={false} className="bg-error-bg border-error/20 p-4">
+										<div className="flex items-center gap-3 text-error">
+											<AlertCircle className="w-5 h-5 flex-shrink-0" />
+											<code className="text-sm">{error}</code>
+										</div>
+									</Card>
+								</motion.div>
+							)}
+						</AnimatePresence>
 
-			{error && (
-				<div className="mt-4 p-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm font-mono">
-					{error}
-				</div>
-			)}
+						<Button onClick={handleConvert} disabled={!yamlInput}>
+							Convert to JSON
+						</Button>
+					</div>
+				</TabsContent>
 
-			<div className="mt-6 flex gap-4">
-				<button
-					onClick={convert}
-					className="px-4 py-2 bg-accent text-background rounded-lg font-medium hover:bg-accent-hover"
-				>
-					Convert
-				</button>
+				<TabsContent value="json-to-yaml">
+					<div className="space-y-6">
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+							<Textarea
+								label="JSON Input"
+								value={jsonInput}
+								onChange={(e) => setJsonInput(e.target.value)}
+								placeholder='{"name": "John", "age": 30}'
+								className="min-h-[300px]"
+							/>
 
-				<button
-					onClick={copy}
-					disabled={!output}
-					className="px-4 py-2 bg-card border border-border text-foreground rounded-lg font-medium hover:bg-card-hover disabled:opacity-50"
-				>
-					Copy
-				</button>
-			</div>
-		</div>
+							<div>
+								<div className="flex items-center justify-between mb-2">
+									<label className="block text-sm font-medium text-foreground-muted">
+										YAML Output
+									</label>
+									{output && <CopyButton text={output} variant="ghost" />}
+								</div>
+								<textarea
+									value={output}
+									readOnly
+									placeholder="YAML will appear here..."
+									className="w-full min-h-[300px] bg-card border border-border rounded-lg px-3 py-3 text-sm font-mono text-foreground placeholder:text-foreground-muted/60 focus:outline-none"
+								/>
+							</div>
+						</div>
+
+						<AnimatePresence>
+							{error && (
+								<motion.div
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+								>
+									<Card hover={false} className="bg-error-bg border-error/20 p-4">
+										<div className="flex items-center gap-3 text-error">
+											<AlertCircle className="w-5 h-5 flex-shrink-0" />
+											<code className="text-sm">{error}</code>
+										</div>
+									</Card>
+								</motion.div>
+							)}
+						</AnimatePresence>
+
+						<Button onClick={handleConvert} disabled={!jsonInput}>
+							Convert to YAML
+						</Button>
+					</div>
+				</TabsContent>
+			</Tabs>
+		</ToolLayout>
 	);
 }

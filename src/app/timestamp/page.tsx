@@ -1,6 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ToolLayout } from "@/components/layout/tool-layout";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { CopyIconButton } from "@/components/ui/copy-button";
+import { AlertCircle, Clock, ArrowRight } from "lucide-react";
 
 export default function TimestampPage() {
 	const [unixInput, setUnixInput] = useState("");
@@ -26,7 +33,6 @@ export default function TimestampPage() {
 			if (isNaN(timestamp)) {
 				throw new Error("Invalid timestamp");
 			}
-			// Handle both seconds and milliseconds
 			const ms = timestamp > 9999999999 ? timestamp : timestamp * 1000;
 			const date = new Date(ms);
 			if (isNaN(date.getTime())) {
@@ -52,115 +58,132 @@ export default function TimestampPage() {
 		}
 	};
 
-	const copy = (text: string) => {
-		navigator.clipboard.writeText(text);
-	};
-
 	const setNow = () => {
 		setUnixInput(String(currentTime));
 	};
 
 	return (
-		<div>
-			<h1 className="font-mono text-2xl font-bold mb-6">Unix Timestamp</h1>
-
-			{/* Current time */}
-			<div className="mb-8 p-4 rounded-lg bg-card border border-border">
-				<div className="text-sm text-muted mb-1">Current Unix Timestamp</div>
-				<div className="flex items-center gap-4">
-					<code className="text-2xl font-mono">{currentTime}</code>
-					<button
-						onClick={() => copy(String(currentTime))}
-						className="px-3 py-1 text-sm bg-background border border-border rounded hover:bg-card-hover"
-					>
-						Copy
-					</button>
-				</div>
-				<div className="text-sm text-muted mt-2">
-					{new Date(currentTime * 1000).toLocaleString()}
-				</div>
-			</div>
-
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-				{/* Unix to Date */}
-				<div className="p-4 rounded-lg bg-card border border-border">
-					<h2 className="font-medium mb-4">Unix → Date</h2>
-					<div className="flex gap-2 mb-4">
-						<input
-							type="text"
-							value={unixInput}
-							onChange={(e) => setUnixInput(e.target.value)}
-							placeholder="1704067200"
-							className="flex-1"
-						/>
-						<button
-							onClick={setNow}
-							className="px-3 py-2 text-sm bg-background border border-border rounded hover:bg-card-hover"
-						>
-							Now
-						</button>
+		<ToolLayout toolId="timestamp">
+			<div className="space-y-6">
+				{/* Current Time */}
+				<Card hover={false} gradient>
+					<div className="flex items-center gap-4">
+						<div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-purple/20 to-accent-pink/20">
+							<Clock className="w-6 h-6 text-primary" />
+						</div>
+						<div className="flex-1">
+							<div className="text-sm text-foreground-muted mb-1">Current Unix Timestamp</div>
+							<div className="flex items-center gap-4">
+								<code className="text-2xl font-mono font-bold text-foreground">
+									{currentTime}
+								</code>
+								<CopyIconButton text={String(currentTime)} />
+							</div>
+							<div className="text-sm text-foreground-muted mt-1">
+								{new Date(currentTime * 1000).toLocaleString()}
+							</div>
+						</div>
 					</div>
-					<button
-						onClick={convertFromUnix}
-						disabled={!unixInput}
-						className="w-full px-4 py-2 bg-accent text-background rounded-lg font-medium hover:bg-accent-hover disabled:opacity-50 mb-4"
-					>
-						Convert
-					</button>
-					{convertedFromUnix && (
-						<div className="space-y-2">
-							<div className="p-3 rounded bg-background font-mono text-sm">
-								{convertedFromUnix}
-							</div>
-							<div className="text-sm text-muted">
-								{new Date(convertedFromUnix).toLocaleString()}
-							</div>
-						</div>
+				</Card>
+
+				{/* Error Display */}
+				<AnimatePresence>
+					{error && (
+						<motion.div
+							initial={{ opacity: 0, y: -10 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -10 }}
+						>
+							<Card hover={false} className="bg-error-bg border-error/20 p-4">
+								<div className="flex items-center gap-3 text-error">
+									<AlertCircle className="w-5 h-5 flex-shrink-0" />
+									<code className="text-sm">{error}</code>
+								</div>
+							</Card>
+						</motion.div>
 					)}
-				</div>
+				</AnimatePresence>
 
-				{/* Date to Unix */}
-				<div className="p-4 rounded-lg bg-card border border-border">
-					<h2 className="font-medium mb-4">Date → Unix</h2>
-					<input
-						type="text"
-						value={dateInput}
-						onChange={(e) => setDateInput(e.target.value)}
-						placeholder="2024-01-01T00:00:00Z"
-						className="w-full mb-4"
-					/>
-					<button
-						onClick={convertFromDate}
-						disabled={!dateInput}
-						className="w-full px-4 py-2 bg-accent text-background rounded-lg font-medium hover:bg-accent-hover disabled:opacity-50 mb-4"
-					>
-						Convert
-					</button>
-					{convertedFromDate !== null && (
-						<div className="flex items-center gap-2">
-							<div className="flex-1 p-3 rounded bg-background font-mono text-sm">
-								{convertedFromDate}
+				{/* Converters Grid */}
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+					{/* Unix to Date */}
+					<Card hover={false}>
+						<h3 className="font-mono text-lg font-semibold mb-4 flex items-center gap-2">
+							Unix <ArrowRight className="w-4 h-4 text-foreground-muted" /> Date
+						</h3>
+						<div className="space-y-4">
+							<div className="flex gap-2">
+								<div className="flex-1">
+									<Input
+										value={unixInput}
+										onChange={(e) => setUnixInput(e.target.value)}
+										placeholder="1704067200"
+									/>
+								</div>
+								<Button variant="secondary" onClick={setNow}>
+									Now
+								</Button>
 							</div>
-							<button
-								onClick={() => copy(String(convertedFromDate))}
-								className="px-3 py-2 text-sm bg-background border border-border rounded hover:bg-card-hover"
-							>
-								Copy
-							</button>
+							<Button onClick={convertFromUnix} disabled={!unixInput} className="w-full">
+								Convert
+							</Button>
+							<AnimatePresence>
+								{convertedFromUnix && (
+									<motion.div
+										initial={{ opacity: 0, height: 0 }}
+										animate={{ opacity: 1, height: "auto" }}
+										exit={{ opacity: 0, height: 0 }}
+										className="space-y-2"
+									>
+										<div className="bg-background-secondary rounded-lg p-3 font-mono text-sm flex items-center justify-between">
+											<span>{convertedFromUnix}</span>
+											<CopyIconButton text={convertedFromUnix} />
+										</div>
+										<div className="text-sm text-foreground-muted">
+											{new Date(convertedFromUnix).toLocaleString()}
+										</div>
+									</motion.div>
+								)}
+							</AnimatePresence>
 						</div>
-					)}
-				</div>
-			</div>
+					</Card>
 
-			{error && (
-				<div className="mt-4 p-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm font-mono">
-					{error}
+					{/* Date to Unix */}
+					<Card hover={false}>
+						<h3 className="font-mono text-lg font-semibold mb-4 flex items-center gap-2">
+							Date <ArrowRight className="w-4 h-4 text-foreground-muted" /> Unix
+						</h3>
+						<div className="space-y-4">
+							<Input
+								value={dateInput}
+								onChange={(e) => setDateInput(e.target.value)}
+								placeholder="2024-01-01T00:00:00Z"
+							/>
+							<Button onClick={convertFromDate} disabled={!dateInput} className="w-full">
+								Convert
+							</Button>
+							<AnimatePresence>
+								{convertedFromDate !== null && (
+									<motion.div
+										initial={{ opacity: 0, height: 0 }}
+										animate={{ opacity: 1, height: "auto" }}
+										exit={{ opacity: 0, height: 0 }}
+									>
+										<div className="bg-background-secondary rounded-lg p-3 font-mono text-sm flex items-center justify-between">
+											<span>{convertedFromDate}</span>
+											<CopyIconButton text={String(convertedFromDate)} />
+										</div>
+									</motion.div>
+								)}
+							</AnimatePresence>
+						</div>
+					</Card>
 				</div>
-			)}
 
-			<div className="mt-8 text-sm text-muted">
-				<p>Accepts timestamps in seconds or milliseconds. Date strings can be ISO 8601 or other parseable formats.</p>
+				<p className="text-sm text-foreground-muted text-center">
+					Accepts timestamps in seconds or milliseconds. Date strings can be ISO 8601 or other parseable formats.
+				</p>
 			</div>
-		</div>
+		</ToolLayout>
 	);
 }

@@ -1,6 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ToolLayout } from "@/components/layout/tool-layout";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { CopyIconButton } from "@/components/ui/copy-button";
+import { Shield } from "lucide-react";
 
 type Algorithm = "SHA-1" | "SHA-256" | "SHA-384" | "SHA-512";
 
@@ -20,10 +27,12 @@ export default function HashPage() {
 		"SHA-384": "",
 		"SHA-512": "",
 	});
+	const [loading, setLoading] = useState(false);
 
 	const generateHashes = async () => {
 		if (!input) return;
 
+		setLoading(true);
 		const algorithms: Algorithm[] = ["SHA-1", "SHA-256", "SHA-384", "SHA-512"];
 		const results: Record<string, string> = {};
 
@@ -32,67 +41,78 @@ export default function HashPage() {
 		}
 
 		setHashes(results as Record<Algorithm, string>);
+		setLoading(false);
 	};
 
-	const copy = (text: string) => {
-		navigator.clipboard.writeText(text);
-	};
+	const hasResults = Object.values(hashes).some((h) => h !== "");
 
 	return (
-		<div>
-			<h1 className="font-mono text-2xl font-bold mb-6">Hash Generator</h1>
-
-			<div className="mb-6">
-				<label className="block text-sm text-muted mb-2">Input Text</label>
-				<textarea
+		<ToolLayout toolId="hash">
+			<div className="space-y-6">
+				<Textarea
+					label="Input Text"
 					value={input}
 					onChange={(e) => setInput(e.target.value)}
 					placeholder="Enter text to hash..."
-					className="w-full h-32 font-mono text-sm"
+					className="min-h-[120px]"
 				/>
-			</div>
 
-			<button
-				onClick={generateHashes}
-				disabled={!input}
-				className="px-4 py-2 bg-accent text-background rounded-lg font-medium hover:bg-accent-hover disabled:opacity-50 mb-6"
-			>
-				Generate Hashes
-			</button>
+				<Button onClick={generateHashes} disabled={!input || loading}>
+					{loading ? "Generating..." : "Generate Hashes"}
+				</Button>
 
-			<div className="space-y-4">
-				{(Object.entries(hashes) as [Algorithm, string][]).map(
-					([alg, value]) => (
-						<div key={alg}>
-							<label className="block text-sm text-muted mb-2">{alg}</label>
-							<div className="flex items-center gap-2">
-								<input
-									type="text"
-									value={value}
-									readOnly
-									placeholder="Hash will appear here..."
-									className="flex-1 font-mono text-sm"
-								/>
-								<button
-									onClick={() => copy(value)}
-									disabled={!value}
-									className="px-3 py-2 bg-card border border-border text-foreground rounded-lg text-sm hover:bg-card-hover disabled:opacity-50"
-								>
-									Copy
-								</button>
+				<AnimatePresence>
+					{hasResults && (
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: 20 }}
+							className="space-y-4"
+						>
+							{(Object.entries(hashes) as [Algorithm, string][]).map(
+								([alg, value], index) => (
+									<motion.div
+										key={alg}
+										initial={{ opacity: 0, x: -20 }}
+										animate={{ opacity: 1, x: 0 }}
+										transition={{ delay: index * 0.05 }}
+									>
+										<Card hover={false}>
+											<div className="flex items-center justify-between mb-2">
+												<div className="flex items-center gap-2">
+													<Shield className="w-4 h-4 text-primary" />
+													<span className="font-mono text-sm font-medium text-foreground">
+														{alg}
+													</span>
+												</div>
+												{value && <CopyIconButton text={value} />}
+											</div>
+											<div className="bg-background-secondary rounded-lg p-3 font-mono text-xs break-all text-foreground-muted">
+												{value || "—"}
+											</div>
+										</Card>
+									</motion.div>
+								)
+							)}
+						</motion.div>
+					)}
+				</AnimatePresence>
+
+				{!hasResults && (
+					<Card hover={false} className="bg-background-secondary/50 border-dashed">
+						<div className="flex items-center gap-3 text-foreground-muted">
+							<Shield className="w-5 h-5" />
+							<div>
+								<p className="font-medium text-foreground">About SHA Hashing</p>
+								<p className="text-sm mt-1">
+									SHA (Secure Hash Algorithm) produces a fixed-size hash value from input text.
+									SHA-256 is commonly used for security applications.
+								</p>
 							</div>
 						</div>
-					)
+					</Card>
 				)}
 			</div>
-
-			<div className="mt-8 p-4 rounded-lg bg-card border border-border text-sm text-muted">
-				<p className="font-medium text-foreground mb-2">Note</p>
-				<p>
-					MD5 is not available in Web Crypto API. For legacy MD5 hashing,
-					consider using a dedicated library.
-				</p>
-			</div>
-		</div>
+		</ToolLayout>
 	);
 }

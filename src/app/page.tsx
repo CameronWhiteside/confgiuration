@@ -1,93 +1,34 @@
-import Link from "next/link";
+"use client";
 
-const tools = [
-	{
-		href: "/json",
-		name: "JSON",
-		description: "Format and validate JSON",
-	},
-	{
-		href: "/env",
-		name: "ENV",
-		description: "Convert between ENV and JSON",
-	},
-	{
-		href: "/base64",
-		name: "Base64",
-		description: "Encode and decode Base64",
-	},
-	{
-		href: "/url",
-		name: "URL",
-		description: "Encode and decode URLs",
-	},
-	{
-		href: "/uuid",
-		name: "UUID",
-		description: "Generate UUIDs",
-	},
-	{
-		href: "/hash",
-		name: "Hash",
-		description: "Generate cryptographic hashes",
-	},
-	{
-		href: "/diff",
-		name: "Diff",
-		description: "Compare two texts",
-	},
-	{
-		href: "/jwt",
-		name: "JWT",
-		description: "Decode JWT tokens",
-	},
-	{
-		href: "/timestamp",
-		name: "Timestamp",
-		description: "Convert Unix timestamps",
-	},
-	{
-		href: "/color",
-		name: "Color",
-		description: "Convert between color formats",
-	},
-	{
-		href: "/regex",
-		name: "Regex",
-		description: "Test regular expressions",
-	},
-	{
-		href: "/yaml",
-		name: "YAML",
-		description: "Convert between YAML and JSON",
-	},
-	{
-		href: "/lorem",
-		name: "Lorem",
-		description: "Generate placeholder text",
-	},
-];
+import { useState } from "react";
+import { HeroBackground } from "@/components/home/hero-background";
+import { Hero } from "@/components/home/hero";
+import { CategoryFilter } from "@/components/home/category-filter";
+import { ToolGrid } from "@/components/home/tool-grid";
+import { CommandPalette } from "@/components/layout/command-palette";
+import { type Category } from "@/lib/tools";
 
 export default function Home() {
-	return (
-		<div className="py-12">
-			<h1 className="font-mono text-4xl font-bold mb-2">confgiuration</h1>
-			<p className="text-muted mb-12">Developer utilities</p>
+	const [searchOpen, setSearchOpen] = useState(false);
+	const [selectedCategory, setSelectedCategory] = useState<Category | "all">("all");
 
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-				{tools.map((tool) => (
-					<Link
-						key={tool.href}
-						href={tool.href}
-						className="group p-6 rounded-lg border border-border bg-card hover:bg-card-hover hover:border-accent/50 transition-all"
-					>
-						<h2 className="font-mono text-xl font-semibold mb-2 group-hover:text-accent transition-colors">
-							{tool.name}
-						</h2>
-						<p className="text-muted text-sm">{tool.description}</p>
-					</Link>
-				))}
+	return (
+		<div className="relative">
+			{/* Animated background */}
+			<HeroBackground />
+
+			{/* Content */}
+			<div className="relative z-10">
+				<Hero onOpenSearch={() => setSearchOpen(true)} />
+				<CategoryFilter
+					selectedCategory={selectedCategory}
+					onSelectCategory={setSelectedCategory}
+				/>
+				<ToolGrid selectedCategory={selectedCategory} />
 			</div>
+
+			{/* Command palette (backup for hero search button) */}
+			<CommandPalette open={searchOpen} onOpenChange={setSearchOpen} />
 		</div>
 	);
 }

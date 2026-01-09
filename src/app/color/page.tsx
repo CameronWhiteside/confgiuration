@@ -1,6 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { ToolLayout } from "@/components/layout/tool-layout";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { CopyIconButton } from "@/components/ui/copy-button";
 
 interface RGB {
 	r: number;
@@ -25,10 +30,7 @@ function hexToRgb(hex: string): RGB | null {
 }
 
 function rgbToHex(r: number, g: number, b: number): string {
-	return (
-		"#" +
-		[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")
-	);
+	return "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
 }
 
 function rgbToHsl(r: number, g: number, b: number): HSL {
@@ -100,9 +102,9 @@ function hslToRgb(h: number, s: number, l: number): RGB {
 }
 
 export default function ColorPage() {
-	const [hex, setHex] = useState("#22d3ee");
-	const [rgb, setRgb] = useState<RGB>({ r: 34, g: 211, b: 238 });
-	const [hsl, setHsl] = useState<HSL>({ h: 188, s: 85, l: 53 });
+	const [hex, setHex] = useState("#8b5cf6");
+	const [rgb, setRgb] = useState<RGB>({ r: 139, g: 92, b: 246 });
+	const [hsl, setHsl] = useState<HSL>({ h: 263, s: 90, l: 66 });
 
 	const updateFromHex = (value: string) => {
 		setHex(value);
@@ -129,145 +131,141 @@ export default function ColorPage() {
 		setHex(rgbToHex(newRgb.r, newRgb.g, newRgb.b));
 	};
 
-	const copy = (text: string) => {
-		navigator.clipboard.writeText(text);
-	};
-
 	const rgbString = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 	const hslString = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
 
 	return (
-		<div>
-			<h1 className="font-mono text-2xl font-bold mb-6">Color Converter</h1>
-
-			{/* Preview */}
-			<div
-				className="w-full h-32 rounded-lg border border-border mb-8"
-				style={{ backgroundColor: hex }}
-			/>
-
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-				{/* HEX */}
-				<div className="p-4 rounded-lg bg-card border border-border">
-					<label className="block text-sm text-muted mb-2">HEX</label>
-					<div className="flex gap-2">
+		<ToolLayout toolId="color">
+			<div className="space-y-6">
+				{/* Color Preview */}
+				<motion.div
+					key={hex}
+					initial={{ scale: 0.98 }}
+					animate={{ scale: 1 }}
+					className="relative h-40 rounded-xl border border-border overflow-hidden"
+					style={{ backgroundColor: hex }}
+				>
+					<div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+						<div className="px-3 py-1.5 rounded-lg bg-white/90 backdrop-blur-sm text-foreground font-mono text-sm">
+							{hex.toUpperCase()}
+						</div>
 						<input
-							type="text"
+							type="color"
 							value={hex}
 							onChange={(e) => updateFromHex(e.target.value)}
-							className="flex-1 font-mono"
+							className="w-10 h-10 rounded-lg cursor-pointer border-2 border-white shadow-lg"
 						/>
-						<button
-							onClick={() => copy(hex)}
-							className="px-3 py-2 text-sm bg-background border border-border rounded hover:bg-card-hover"
-						>
-							Copy
-						</button>
 					</div>
-				</div>
+				</motion.div>
 
-				{/* RGB */}
-				<div className="p-4 rounded-lg bg-card border border-border">
-					<label className="block text-sm text-muted mb-2">RGB</label>
-					<div className="flex gap-2 mb-2">
-						<div className="flex-1">
-							<label className="block text-xs text-muted mb-1">R</label>
-							<input
-								type="number"
-								min={0}
-								max={255}
-								value={rgb.r}
-								onChange={(e) => updateFromRgb("r", Number(e.target.value))}
-								className="w-full"
+				{/* Color Values Grid */}
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+					{/* HEX */}
+					<Card hover={false}>
+						<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider mb-3">
+							HEX
+						</h3>
+						<div className="flex gap-2">
+							<Input
+								value={hex}
+								onChange={(e) => updateFromHex(e.target.value)}
+								className="font-mono"
 							/>
+							<CopyIconButton text={hex} />
 						</div>
-						<div className="flex-1">
-							<label className="block text-xs text-muted mb-1">G</label>
-							<input
-								type="number"
-								min={0}
-								max={255}
-								value={rgb.g}
-								onChange={(e) => updateFromRgb("g", Number(e.target.value))}
-								className="w-full"
-							/>
-						</div>
-						<div className="flex-1">
-							<label className="block text-xs text-muted mb-1">B</label>
-							<input
-								type="number"
-								min={0}
-								max={255}
-								value={rgb.b}
-								onChange={(e) => updateFromRgb("b", Number(e.target.value))}
-								className="w-full"
-							/>
-						</div>
-					</div>
-					<div className="flex gap-2">
-						<div className="flex-1 p-2 rounded bg-background font-mono text-sm">
-							{rgbString}
-						</div>
-						<button
-							onClick={() => copy(rgbString)}
-							className="px-3 py-2 text-sm bg-background border border-border rounded hover:bg-card-hover"
-						>
-							Copy
-						</button>
-					</div>
-				</div>
+					</Card>
 
-				{/* HSL */}
-				<div className="p-4 rounded-lg bg-card border border-border">
-					<label className="block text-sm text-muted mb-2">HSL</label>
-					<div className="flex gap-2 mb-2">
-						<div className="flex-1">
-							<label className="block text-xs text-muted mb-1">H</label>
-							<input
-								type="number"
-								min={0}
-								max={360}
-								value={hsl.h}
-								onChange={(e) => updateFromHsl("h", Number(e.target.value))}
-								className="w-full"
-							/>
+					{/* RGB */}
+					<Card hover={false}>
+						<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider mb-3">
+							RGB
+						</h3>
+						<div className="grid grid-cols-3 gap-2 mb-3">
+							<div>
+								<label className="block text-xs text-foreground-muted mb-1">R</label>
+								<Input
+									type="number"
+									min={0}
+									max={255}
+									value={rgb.r}
+									onChange={(e) => updateFromRgb("r", Number(e.target.value))}
+								/>
+							</div>
+							<div>
+								<label className="block text-xs text-foreground-muted mb-1">G</label>
+								<Input
+									type="number"
+									min={0}
+									max={255}
+									value={rgb.g}
+									onChange={(e) => updateFromRgb("g", Number(e.target.value))}
+								/>
+							</div>
+							<div>
+								<label className="block text-xs text-foreground-muted mb-1">B</label>
+								<Input
+									type="number"
+									min={0}
+									max={255}
+									value={rgb.b}
+									onChange={(e) => updateFromRgb("b", Number(e.target.value))}
+								/>
+							</div>
 						</div>
-						<div className="flex-1">
-							<label className="block text-xs text-muted mb-1">S%</label>
-							<input
-								type="number"
-								min={0}
-								max={100}
-								value={hsl.s}
-								onChange={(e) => updateFromHsl("s", Number(e.target.value))}
-								className="w-full"
-							/>
+						<div className="flex gap-2">
+							<div className="flex-1 bg-background-secondary rounded-lg p-2 font-mono text-sm">
+								{rgbString}
+							</div>
+							<CopyIconButton text={rgbString} />
 						</div>
-						<div className="flex-1">
-							<label className="block text-xs text-muted mb-1">L%</label>
-							<input
-								type="number"
-								min={0}
-								max={100}
-								value={hsl.l}
-								onChange={(e) => updateFromHsl("l", Number(e.target.value))}
-								className="w-full"
-							/>
+					</Card>
+
+					{/* HSL */}
+					<Card hover={false}>
+						<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider mb-3">
+							HSL
+						</h3>
+						<div className="grid grid-cols-3 gap-2 mb-3">
+							<div>
+								<label className="block text-xs text-foreground-muted mb-1">H</label>
+								<Input
+									type="number"
+									min={0}
+									max={360}
+									value={hsl.h}
+									onChange={(e) => updateFromHsl("h", Number(e.target.value))}
+								/>
+							</div>
+							<div>
+								<label className="block text-xs text-foreground-muted mb-1">S%</label>
+								<Input
+									type="number"
+									min={0}
+									max={100}
+									value={hsl.s}
+									onChange={(e) => updateFromHsl("s", Number(e.target.value))}
+								/>
+							</div>
+							<div>
+								<label className="block text-xs text-foreground-muted mb-1">L%</label>
+								<Input
+									type="number"
+									min={0}
+									max={100}
+									value={hsl.l}
+									onChange={(e) => updateFromHsl("l", Number(e.target.value))}
+								/>
+							</div>
 						</div>
-					</div>
-					<div className="flex gap-2">
-						<div className="flex-1 p-2 rounded bg-background font-mono text-sm">
-							{hslString}
+						<div className="flex gap-2">
+							<div className="flex-1 bg-background-secondary rounded-lg p-2 font-mono text-sm">
+								{hslString}
+							</div>
+							<CopyIconButton text={hslString} />
 						</div>
-						<button
-							onClick={() => copy(hslString)}
-							className="px-3 py-2 text-sm bg-background border border-border rounded hover:bg-card-hover"
-						>
-							Copy
-						</button>
-					</div>
+					</Card>
 				</div>
 			</div>
-		</div>
+		</ToolLayout>
 	);
 }

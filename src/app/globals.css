@@ -1,36 +1,138 @@
 @import "tailwindcss";
 
 :root {
-	--background: #0a0a0a;
-	--foreground: #ededed;
-	--muted: #a1a1aa;
-	--border: #27272a;
-	--accent: #22d3ee;
-	--accent-hover: #06b6d4;
-	--card: #18181b;
-	--card-hover: #1f1f23;
-	--success: #4ade80;
-	--error: #f87171;
+	/* Light theme - clean, modern */
+	--background: #fafafa;
+	--background-secondary: #f4f4f5;
+	--foreground: #18181b;
+	--foreground-muted: #71717a;
+
+	/* Cards and surfaces */
+	--card: #ffffff;
+	--card-hover: #fafafa;
+	--border: #e4e4e7;
+	--border-hover: #d4d4d8;
+
+	/* Purple/Pink gradient accents */
+	--primary: #8b5cf6;
+	--primary-hover: #7c3aed;
+	--primary-foreground: #ffffff;
+
+	--accent-purple: #a855f7;
+	--accent-pink: #ec4899;
+	--accent-violet: #8b5cf6;
+
+	/* Semantic colors */
+	--success: #22c55e;
+	--success-bg: #f0fdf4;
+	--error: #ef4444;
+	--error-bg: #fef2f2;
+	--warning: #f59e0b;
+	--warning-bg: #fffbeb;
+
+	/* Gradients */
+	--gradient-primary: linear-gradient(135deg, #a855f7, #ec4899);
+	--gradient-subtle: linear-gradient(
+		135deg,
+		rgba(168, 85, 247, 0.1),
+		rgba(236, 72, 153, 0.1)
+	);
+	--gradient-border: linear-gradient(
+		135deg,
+		rgba(168, 85, 247, 0.5),
+		rgba(236, 72, 153, 0.5)
+	);
+
+	/* Shadows */
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+		0 4px 6px -4px rgb(0 0 0 / 0.1);
+	--shadow-glow: 0 0 40px -10px rgba(168, 85, 247, 0.3);
+
+	/* Typography */
+	--font-sans: var(--font-geist-sans);
+	--font-mono: var(--font-geist-mono);
 }
 
 @theme inline {
 	--color-background: var(--background);
+	--color-background-secondary: var(--background-secondary);
 	--color-foreground: var(--foreground);
-	--color-muted: var(--muted);
-	--color-border: var(--border);
-	--color-accent: var(--accent);
-	--color-accent-hover: var(--accent-hover);
+	--color-foreground-muted: var(--foreground-muted);
 	--color-card: var(--card);
 	--color-card-hover: var(--card-hover);
+	--color-border: var(--border);
+	--color-border-hover: var(--border-hover);
+	--color-primary: var(--primary);
+	--color-primary-hover: var(--primary-hover);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-accent-purple: var(--accent-purple);
+	--color-accent-pink: var(--accent-pink);
+	--color-accent-violet: var(--accent-violet);
 	--color-success: var(--success);
+	--color-success-bg: var(--success-bg);
 	--color-error: var(--error);
+	--color-error-bg: var(--error-bg);
+	--color-warning: var(--warning);
+	--color-warning-bg: var(--warning-bg);
 	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
+}
+
+/* Base styles */
+html {
+	scroll-padding-top: 5rem;
 }
 
 body {
 	background: var(--background);
 	color: var(--foreground);
+	font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Geometric grid background */
+.geometric-grid {
+	background-image: linear-gradient(
+			to right,
+			rgba(168, 85, 247, 0.03) 1px,
+			transparent 1px
+		),
+		linear-gradient(to bottom, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+	background-size: 60px 60px;
+}
+
+/* Gradient text */
+.gradient-text {
+	background: var(--gradient-primary);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+/* Gradient border effect */
+.gradient-border {
+	position: relative;
+	background: var(--card);
+	border-radius: 12px;
+}
+
+.gradient-border::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: 12px;
+	padding: 1px;
+	background: var(--gradient-border);
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.gradient-border:hover::before {
+	opacity: 1;
 }
 
 /* Custom scrollbar */
@@ -40,7 +142,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-	background: var(--background);
+	background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -49,52 +151,91 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: var(--muted);
+	background: var(--foreground-muted);
 }
 
-/* Textarea and input styling */
+/* Selection */
+::selection {
+	background: rgba(168, 85, 247, 0.2);
+	color: var(--foreground);
+}
+
+/* Focus ring */
+.focus-ring {
+	outline: none;
+}
+
+.focus-ring:focus-visible {
+	outline: 2px solid var(--primary);
+	outline-offset: 2px;
+}
+
+/* Textarea and input base styling */
 textarea,
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="password"] {
 	background: var(--card);
 	border: 1px solid var(--border);
 	border-radius: 8px;
-	padding: 12px;
+	padding: 10px 12px;
 	color: var(--foreground);
-	font-family: var(--font-geist-mono);
+	font-family: var(--font-mono);
 	font-size: 14px;
-	resize: vertical;
-	transition: border-color 0.2s;
+	transition: border-color 0.2s, box-shadow 0.2s;
+	width: 100%;
 }
 
 textarea:focus,
 input[type="text"]:focus,
-input[type="number"]:focus {
+input[type="number"]:focus,
+input[type="password"]:focus {
 	outline: none;
-	border-color: var(--accent);
+	border-color: var(--primary);
+	box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
 textarea::placeholder,
 input::placeholder {
-	color: var(--muted);
+	color: var(--foreground-muted);
 	opacity: 0.6;
 }
 
-/* Button base */
+textarea {
+	resize: vertical;
+	min-height: 100px;
+}
+
+/* Select styling */
+select {
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	padding: 8px 32px 8px 12px;
+	color: var(--foreground);
+	font-size: 14px;
+	cursor: pointer;
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 8px center;
+	transition: border-color 0.2s;
+}
+
+select:focus {
+	outline: none;
+	border-color: var(--primary);
+}
+
+/* Button base reset */
 button {
 	cursor: pointer;
-	transition: all 0.2s;
+	font-family: inherit;
 }
 
 button:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
-}
-
-/* Selection */
-::selection {
-	background: var(--accent);
-	color: var(--background);
 }
 
 /* Code blocks */
@@ -104,10 +245,180 @@ pre {
 	border-radius: 8px;
 	padding: 16px;
 	overflow-x: auto;
-	font-family: var(--font-geist-mono);
-	font-size: 14px;
+	font-family: var(--font-mono);
+	font-size: 13px;
 }
 
 code {
-	font-family: var(--font-geist-mono);
+	font-family: var(--font-mono);
+	font-size: 0.9em;
+}
+
+/* Animations */
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-10px);
+	}
+}
+
+@keyframes pulse-glow {
+	0%,
+	100% {
+		opacity: 0.4;
+	}
+	50% {
+		opacity: 0.8;
+	}
+}
+
+@keyframes gradient-shift {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes spin-slow {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes shimmer {
+	0% {
+		transform: translateX(-100%);
+	}
+	100% {
+		transform: translateX(100%);
+	}
+}
+
+.animate-float {
+	animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+	animation: pulse-glow 4s ease-in-out infinite;
+}
+
+.animate-gradient {
+	background-size: 200% 200%;
+	animation: gradient-shift 8s ease infinite;
+}
+
+.animate-spin-slow {
+	animation: spin-slow 20s linear infinite;
+}
+
+.animate-shimmer {
+	animation: shimmer 2s infinite;
+}
+
+/* Utility classes */
+.glass {
+	background: rgba(255, 255, 255, 0.8);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+}
+
+.glass-subtle {
+	background: rgba(255, 255, 255, 0.6);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+/* Tool page specific styles */
+.tool-container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* Result highlighting */
+.highlight-success {
+	background: rgba(34, 197, 94, 0.1);
+	color: var(--success);
+}
+
+.highlight-error {
+	background: rgba(239, 68, 68, 0.1);
+	color: var(--error);
+}
+
+.highlight-match {
+	background: rgba(168, 85, 247, 0.2);
+	color: var(--primary);
+	border-radius: 2px;
+	padding: 0 2px;
+}
+
+/* Article content styles */
+.article-content pre {
+	background: var(--background-secondary);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	padding: 16px;
+	overflow-x: auto;
+	margin: 16px 0;
+}
+
+.article-content pre code {
+	background: transparent;
+	padding: 0;
+	font-size: 13px;
+	line-height: 1.6;
+	color: var(--foreground);
+}
+
+.article-content code {
+	background: var(--background-secondary);
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-size: 0.875em;
+	color: var(--primary);
+}
+
+.article-content table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.article-content th,
+.article-content td {
+	text-align: left;
+}
+
+.article-content strong {
+	color: var(--foreground);
+	font-weight: 600;
+}
+
+.article-content em {
+	font-style: italic;
+}
+
+.article-content h2:first-child,
+.article-content h3:first-child {
+	margin-top: 0;
 }

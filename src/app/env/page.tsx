@@ -1,148 +1,207 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ToolLayout } from "@/components/layout/tool-layout";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { AlertCircle } from "lucide-react";
 
-type Mode = "env-to-json" | "json-to-env";
+function parseEnv(env: string): Record<string, string> {
+	const result: Record<string, string> = {};
+	const lines = env.split("\n");
+
+	for (const line of lines) {
+		const trimmed = line.trim();
+		if (!trimmed || trimmed.startsWith("#")) continue;
+
+		const eqIndex = trimmed.indexOf("=");
+		if (eqIndex === -1) continue;
+
+		const key = trimmed.slice(0, eqIndex).trim();
+		let value = trimmed.slice(eqIndex + 1).trim();
+
+		if (
+			(value.startsWith('"') && value.endsWith('"')) ||
+			(value.startsWith("'") && value.endsWith("'"))
+		) {
+			value = value.slice(1, -1);
+		}
+
+		result[key] = value;
+	}
+
+	return result;
+}
+
+function jsonToEnv(json: Record<string, unknown>): string {
+	const lines: string[] = [];
+
+	for (const [key, value] of Object.entries(json)) {
+		const strValue = String(value);
+		const needsQuotes =
+			strValue.includes(" ") || strValue.includes("=") || strValue.includes("#");
+		lines.push(`${key}=${needsQuotes ? `"${strValue}"` : strValue}`);
+	}
+
+	return lines.join("\n");
+}
 
 export default function EnvPage() {
-	const [input, setInput] = useState("");
+	const [envInput, setEnvInput] = useState("");
+	const [jsonInput, setJsonInput] = useState("");
 	const [output, setOutput] = useState("");
 	const [error, setError] = useState("");
-	const [mode, setMode] = useState<Mode>("env-to-json");
+	const [mode, setMode] = useState<"env-to-json" | "json-to-env">("env-to-json");
 
-	const convert = () => {
+	const convertEnvToJson = () => {
 		setError("");
 		try {
-			if (mode === "env-to-json") {
-				const lines = input.split("\n");
-				const result: Record<string, string> = {};
-
-				for (const line of lines) {
-					const trimmed = line.trim();
-					if (!trimmed || trimmed.startsWith("#")) continue;
-
-					const eqIndex = trimmed.indexOf("=");
-					if (eqIndex === -1) continue;
-
-					const key = trimmed.slice(0, eqIndex).trim();
-					let value = trimmed.slice(eqIndex + 1).trim();
-
-					// Remove surrounding quotes
-					if (
-						(value.startsWith('"') && value.endsWith('"')) ||
-						(value.startsWith("'") && value.endsWith("'"))
-					) {
-						value = value.slice(1, -1);
-					}
-
-					result[key] = value;
-				}
-
-				setOutput(JSON.stringify(result, null, 2));
-			} else {
-				const parsed = JSON.parse(input);
-				const lines: string[] = [];
-
-				for (const [key, value] of Object.entries(parsed)) {
-					const strValue = String(value);
-					const needsQuotes =
-						strValue.includes(" ") ||
-						strValue.includes("=") ||
-						strValue.includes("#");
-					lines.push(`${key}=${needsQuotes ? `"${strValue}"` : strValue}`);
-				}
-
-				setOutput(lines.join("\n"));
-			}
+			const parsed = parseEnv(envInput);
+			setOutput(JSON.stringify(parsed, null, 2));
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Conversion failed");
+			setError(e instanceof Error ? e.message : "Invalid ENV format");
 			setOutput("");
 		}
 	};
 
-	const copy = () => {
-		navigator.clipboard.writeText(output);
+	const convertJsonToEnv = () => {
+		setError("");
+		try {
+			const parsed = JSON.parse(jsonInput);
+			setOutput(jsonToEnv(parsed));
+		} catch (e) {
+			setError(e instanceof Error ? e.message : "Invalid JSON");
+			setOutput("");
+		}
+	};
+
+	const handleConvert = () => {
+		if (mode === "env-to-json") {
+			convertEnvToJson();
+		} else {
+			convertJsonToEnv();
+		}
 	};
 
 	return (
-		<div>
-			<h1 className="font-mono text-2xl font-bold mb-6">ENV / JSON Converter</h1>
+		<ToolLayout toolId="env">
+			<Tabs
+				defaultValue="env-to-json"
+				onValueChange={(v) => {
+					setMode(v as "env-to-json" | "json-to-env");
+					setError("");
+					setOutput("");
+				}}
+			>
+				<TabsList className="mb-6">
+					<TabsTrigger value="env-to-json">ENV to JSON</TabsTrigger>
+					<TabsTrigger value="json-to-env">JSON to ENV</TabsTrigger>
+				</TabsList>
 
-			<div className="flex gap-2 mb-6">
-				<button
-					onClick={() => setMode("env-to-json")}
-					className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-						mode === "env-to-json"
-							? "bg-accent text-background"
-							: "bg-card border border-border text-foreground hover:bg-card-hover"
-					}`}
-				>
-					ENV → JSON
-				</button>
-				<button
-					onClick={() => setMode("json-to-env")}
-					className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-						mode === "json-to-env"
-							? "bg-accent text-background"
-							: "bg-card border border-border text-foreground hover:bg-card-hover"
-					}`}
-				>
-					JSON → ENV
-				</button>
-			</div>
+				<TabsContent value="env-to-json">
+					<div className="space-y-6">
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+							<Textarea
+								label="ENV Input"
+								value={envInput}
+								onChange={(e) => setEnvInput(e.target.value)}
+								placeholder="DATABASE_URL=postgres://...&#10;API_KEY=secret123&#10;DEBUG=true"
+								className="min-h-[300px]"
+							/>
 
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<div>
-					<label className="block text-sm text-muted mb-2">
-						{mode === "env-to-json" ? "ENV Input" : "JSON Input"}
-					</label>
-					<textarea
-						value={input}
-						onChange={(e) => setInput(e.target.value)}
-						placeholder={
-							mode === "env-to-json"
-								? "DATABASE_URL=postgres://...\nAPI_KEY=secret123"
-								: '{\n  "DATABASE_URL": "postgres://...",\n  "API_KEY": "secret123"\n}'
-						}
-						className="w-full h-80 font-mono text-sm"
-					/>
-				</div>
+							<div>
+								<div className="flex items-center justify-between mb-2">
+									<label className="block text-sm font-medium text-foreground-muted">
+										JSON Output
+									</label>
+									{output && <CopyButton text={output} variant="ghost" />}
+								</div>
+								<textarea
+									value={output}
+									readOnly
+									placeholder="JSON will appear here..."
+									className="w-full min-h-[300px] bg-card border border-border rounded-lg px-3 py-3 text-sm font-mono text-foreground placeholder:text-foreground-muted/60 focus:outline-none"
+								/>
+							</div>
+						</div>
 
-				<div>
-					<label className="block text-sm text-muted mb-2">
-						{mode === "env-to-json" ? "JSON Output" : "ENV Output"}
-					</label>
-					<textarea
-						value={output}
-						readOnly
-						placeholder="Output will appear here..."
-						className="w-full h-80 font-mono text-sm"
-					/>
-				</div>
-			</div>
+						<AnimatePresence>
+							{error && (
+								<motion.div
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+								>
+									<Card hover={false} className="bg-error-bg border-error/20 p-4">
+										<div className="flex items-center gap-3 text-error">
+											<AlertCircle className="w-5 h-5 flex-shrink-0" />
+											<code className="text-sm">{error}</code>
+										</div>
+									</Card>
+								</motion.div>
+							)}
+						</AnimatePresence>
 
-			{error && (
-				<div className="mt-4 p-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm font-mono">
-					{error}
-				</div>
-			)}
+						<Button onClick={handleConvert} disabled={!envInput}>
+							Convert to JSON
+						</Button>
+					</div>
+				</TabsContent>
 
-			<div className="mt-6 flex gap-4">
-				<button
-					onClick={convert}
-					className="px-4 py-2 bg-accent text-background rounded-lg font-medium hover:bg-accent-hover"
-				>
-					Convert
-				</button>
+				<TabsContent value="json-to-env">
+					<div className="space-y-6">
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+							<Textarea
+								label="JSON Input"
+								value={jsonInput}
+								onChange={(e) => setJsonInput(e.target.value)}
+								placeholder='{"DATABASE_URL": "postgres://...", "API_KEY": "secret123"}'
+								className="min-h-[300px]"
+							/>
 
-				<button
-					onClick={copy}
-					disabled={!output}
-					className="px-4 py-2 bg-card border border-border text-foreground rounded-lg font-medium hover:bg-card-hover disabled:opacity-50"
-				>
-					Copy
-				</button>
-			</div>
-		</div>
+							<div>
+								<div className="flex items-center justify-between mb-2">
+									<label className="block text-sm font-medium text-foreground-muted">
+										ENV Output
+									</label>
+									{output && <CopyButton text={output} variant="ghost" />}
+								</div>
+								<textarea
+									value={output}
+									readOnly
+									placeholder="ENV will appear here..."
+									className="w-full min-h-[300px] bg-card border border-border rounded-lg px-3 py-3 text-sm font-mono text-foreground placeholder:text-foreground-muted/60 focus:outline-none"
+								/>
+							</div>
+						</div>
+
+						<AnimatePresence>
+							{error && (
+								<motion.div
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+								>
+									<Card hover={false} className="bg-error-bg border-error/20 p-4">
+										<div className="flex items-center gap-3 text-error">
+											<AlertCircle className="w-5 h-5 flex-shrink-0" />
+											<code className="text-sm">{error}</code>
+										</div>
+									</Card>
+								</motion.div>
+							)}
+						</AnimatePresence>
+
+						<Button onClick={handleConvert} disabled={!jsonInput}>
+							Convert to ENV
+						</Button>
+					</div>
+				</TabsContent>
+			</Tabs>
+		</ToolLayout>
 	);
 }
