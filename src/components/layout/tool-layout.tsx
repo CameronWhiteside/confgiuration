@@ -5,9 +5,11 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getTool, tools, categories, type Category } from "@/lib/tools";
-import { getToolContent } from "@/lib/content";
+import { getArticlesForTool } from "@/lib/content";
+import { getToolFAQs } from "@/lib/faq";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import { ToolArticles } from "@/components/layout/tool-articles";
+import { FAQSection } from "@/components/ui/faq";
 import { pageVariants } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 
@@ -63,7 +65,8 @@ export function ToolLayout({ toolId, children }: ToolLayoutProps) {
 
 	const gradient = categoryGradients[tool.category];
 	const categoryInfo = categories[tool.category];
-	const toolContent = getToolContent(toolId);
+	const toolArticles = getArticlesForTool(toolId);
+	const toolFaqs = getToolFAQs(toolId);
 
 	// Get related tools (same category, excluding current)
 	const relatedTools = tools
@@ -212,13 +215,28 @@ export function ToolLayout({ toolId, children }: ToolLayoutProps) {
 			</section>
 
 			{/* Articles Section */}
-			{toolContent && toolContent.articles.length > 0 && (
+			{toolArticles.length > 0 && (
 				<motion.div
 					initial={{ y: 20, opacity: 0 }}
 					animate={{ y: 0, opacity: 1 }}
 					transition={{ delay: 0.35, duration: 0.4 }}
 				>
-					<ToolArticles articles={toolContent.articles} toolName={tool.name} />
+					<ToolArticles articles={toolArticles} toolName={tool.name} />
+				</motion.div>
+			)}
+
+			{/* FAQ Section */}
+			{toolFaqs.length > 0 && (
+				<motion.div
+					initial={{ y: 20, opacity: 0 }}
+					animate={{ y: 0, opacity: 1 }}
+					transition={{ delay: 0.4, duration: 0.4 }}
+				>
+					<FAQSection
+						faqs={toolFaqs}
+						title={`${tool.name} FAQ`}
+						description={`Common questions about using the ${tool.name} tool`}
+					/>
 				</motion.div>
 			)}
 
@@ -227,7 +245,7 @@ export function ToolLayout({ toolId, children }: ToolLayoutProps) {
 				<motion.div
 					initial={{ y: 20, opacity: 0 }}
 					animate={{ y: 0, opacity: 1 }}
-					transition={{ delay: 0.4, duration: 0.4 }}
+					transition={{ delay: 0.45, duration: 0.4 }}
 					className="mt-16 pt-8 border-t border-border"
 				>
 					{relatedTools.length > 0 && (

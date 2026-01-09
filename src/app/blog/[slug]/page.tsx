@@ -8,7 +8,9 @@ import {
 	getAllArticles,
 	type Article,
 } from "@/lib/content";
+import { getArticleFAQs, generateFAQJsonLd } from "@/lib/faq";
 import { getTool } from "@/lib/tools";
+import { FAQSection } from "@/components/ui/faq";
 import { cn } from "@/lib/utils";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://confgiuration.dev";
@@ -79,9 +81,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
 	const tool = getTool(article.toolId);
 	const relatedArticles = getRelatedArticles(slug);
+	const articleFaqs = getArticleFAQs(slug);
 
 	// Generate JSON-LD structured data
-	const jsonLd = {
+	const articleJsonLd = {
 		"@context": "https://schema.org",
 		"@type": "Article",
 		headline: article.title,
@@ -103,12 +106,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 		keywords: article.tags.join(", "),
 	};
 
+	// Generate FAQ JSON-LD if article has FAQs
+	const faqJsonLd = articleFaqs.length > 0 ? generateFAQJsonLd(articleFaqs) : null;
+
 	return (
 		<>
 			<script
 				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
 			/>
+			{faqJsonLd && (
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+				/>
+			)}
 
 			<article className="min-h-screen">
 				{/* Header */}
@@ -195,10 +207,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 					</div>
 				</div>
 
+				{/* FAQ Section */}
+				{articleFaqs.length > 0 && (
+					<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+						<FAQSection
+							faqs={articleFaqs}
+							title="Frequently Asked Questions"
+							description="Common questions about this topic"
+							includeSchema={false} // Already added as separate JSON-LD above
+						/>
+					</div>
+				)}
+
 				{/* Related Articles */}
 				{relatedArticles.length > 0 && (
 					<section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-						<div className="border-t border-border pt-12">
+						<div className="border-t border-border pt-12 mt-12">
 							<div className="flex items-center gap-3 mb-6">
 								<div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-accent-purple/10 to-accent-pink/10">
 									<BookOpen className="w-5 h-5 text-primary" />
