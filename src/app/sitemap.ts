@@ -23,14 +23,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		priority: 0.9,
 	}));
 
-	// Article anchors for deep linking (optional but good for SEO)
+	// Blog listing page
+	const blogEntry = {
+		url: `${siteUrl}/blog`,
+		lastModified: currentDate,
+		changeFrequency: "weekly" as const,
+		priority: 0.8,
+	};
+
+	// Blog article pages
 	const articles = getAllArticles();
 	const articleEntries = articles.map((article) => ({
-		url: `${siteUrl}/${article.toolId}#${article.id}`,
+		url: `${siteUrl}/blog/${article.slug}`,
 		lastModified: currentDate,
 		changeFrequency: "monthly" as const,
 		priority: 0.7,
 	}));
 
-	return [homeEntry, ...toolEntries, ...articleEntries];
+	return [homeEntry, ...toolEntries, blogEntry, ...articleEntries];
 }

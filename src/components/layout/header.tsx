@@ -54,7 +54,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
 						className="hidden lg:flex items-center gap-1"
 						aria-label="Main navigation"
 					>
-						{tools.slice(0, 8).map((tool) => (
+						{tools.slice(0, 7).map((tool) => (
 							<Link
 								key={tool.id}
 								href={tool.href}
@@ -69,11 +69,23 @@ export function Header({ onOpenSearch }: HeaderProps) {
 								{tool.name}
 							</Link>
 						))}
-						{tools.length > 8 && (
+						{tools.length > 7 && (
 							<span className="px-2 text-foreground-muted text-sm" aria-hidden="true">
-								+{tools.length - 8} more
+								+{tools.length - 7} more
 							</span>
 						)}
+						<Link
+							href="/blog"
+							aria-current={pathname.startsWith("/blog") ? "page" : undefined}
+							className={cn(
+								"px-3 py-1.5 text-sm font-medium rounded-md transition-colors",
+								pathname.startsWith("/blog")
+									? "text-foreground bg-background-secondary"
+									: "text-foreground-muted hover:text-foreground hover:bg-background-secondary/50"
+							)}
+						>
+							Blog
+						</Link>
 					</nav>
 
 					{/* Search Trigger */}

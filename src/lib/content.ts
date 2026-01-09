@@ -1,29 +1,26 @@
 // Blog/article content for each tool
 export interface Article {
-	id: string;
+	slug: string;
+	toolId: string;
 	title: string;
 	description: string;
 	content: string; // Markdown content
 	tags: string[];
+	relatedSlugs?: string[]; // Related article slugs for cross-linking
 }
 
-export interface ToolContent {
-	toolId: string;
-	articles: Article[];
-}
-
-export const toolContent: Record<string, ToolContent> = {
-	// ==================== ENCODING TOOLS ====================
-	base64: {
+// All articles in a flat array for easy access
+export const articles: Article[] = [
+	// ==================== BASE64 ARTICLES ====================
+	{
+		slug: "what-is-base64-encoding",
 		toolId: "base64",
-		articles: [
-			{
-				id: "what-is-base64",
-				title: "What is Base64 Encoding?",
-				description:
-					"Understanding Base64 encoding, how it works, and why it's essential for web development.",
-				tags: ["basics", "encoding", "web"],
-				content: `
+		title: "What is Base64 Encoding?",
+		description:
+			"Understanding Base64 encoding, how it works, and why it's essential for web development.",
+		tags: ["basics", "encoding", "web"],
+		relatedSlugs: ["base64-javascript-guide", "base64-not-encryption"],
+		content: `
 ## What is Base64?
 
 Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format. It's called "Base64" because it uses 64 different characters to represent data: A-Z, a-z, 0-9, +, and /.
@@ -59,14 +56,16 @@ const decoded = atob("SGVsbG8sIFdvcmxkIQ==");
 // Result: "Hello, World!"
 \`\`\`
 `,
-			},
-			{
-				id: "base64-in-javascript",
-				title: "Working with Base64 in JavaScript",
-				description:
-					"Complete guide to encoding and decoding Base64 in JavaScript, including handling Unicode and binary data.",
-				tags: ["javascript", "tutorial", "code"],
-				content: `
+	},
+	{
+		slug: "base64-javascript-guide",
+		toolId: "base64",
+		title: "Working with Base64 in JavaScript",
+		description:
+			"Complete guide to encoding and decoding Base64 in JavaScript, including handling Unicode and binary data.",
+		tags: ["javascript", "tutorial", "code"],
+		relatedSlugs: ["what-is-base64-encoding", "base64-not-encryption"],
+		content: `
 ## Base64 in JavaScript
 
 JavaScript provides built-in functions for Base64 encoding, but there are important nuances to understand.
@@ -145,14 +144,16 @@ input.addEventListener('change', async (e) => {
 });
 \`\`\`
 `,
-			},
-			{
-				id: "base64-security",
-				title: "Base64 is NOT Encryption",
-				description:
-					"A critical security reminder: Base64 encoding provides zero security. Understanding why and what to use instead.",
-				tags: ["security", "important", "best-practices"],
-				content: `
+	},
+	{
+		slug: "base64-not-encryption",
+		toolId: "base64",
+		title: "Base64 is NOT Encryption: Security Myths Debunked",
+		description:
+			"A critical security reminder: Base64 encoding provides zero security. Understanding why and what to use instead.",
+		tags: ["security", "important", "best-practices"],
+		relatedSlugs: ["what-is-base64-encoding", "password-hashing-best-practices", "jwt-security-best-practices"],
+		content: `
 ## Base64 is NOT Security
 
 One of the most common misconceptions in web development is that Base64 provides some form of security. **It does not.**
@@ -215,20 +216,18 @@ async function encrypt(plaintext, key) {
 - Transferring binary over text-only protocols
 - Making binary data URL-safe (with Base64URL variant)
 `,
-			},
-		],
 	},
 
-	url: {
+	// ==================== URL ARTICLES ====================
+	{
+		slug: "url-encoding-explained",
 		toolId: "url",
-		articles: [
-			{
-				id: "url-encoding-explained",
-				title: "URL Encoding Explained",
-				description:
-					"Why URLs need encoding, which characters must be escaped, and how percent-encoding works.",
-				tags: ["basics", "web", "http"],
-				content: `
+		title: "URL Encoding Explained: A Complete Guide",
+		description:
+			"Why URLs need encoding, which characters must be escaped, and how percent-encoding works.",
+		tags: ["basics", "web", "http"],
+		relatedSlugs: ["javascript-url-encoding-functions", "url-encoding-security"],
+		content: `
 ## Why URLs Need Encoding
 
 URLs can only contain a limited set of characters from the ASCII character set. When you need to include special characters, spaces, or non-ASCII characters in a URL, they must be encoded.
@@ -269,14 +268,16 @@ Encoded:  https://example.com/search?q=hello%20world&lang=en
 2. **Double encoding**: Encoding already-encoded strings creates bugs
 3. **UTF-8**: Non-ASCII characters are first converted to UTF-8 bytes, then percent-encoded
 `,
-			},
-			{
-				id: "javascript-url-functions",
-				title: "JavaScript URL Encoding Functions",
-				description:
-					"Understanding encodeURI vs encodeURIComponent and when to use each.",
-				tags: ["javascript", "tutorial", "code"],
-				content: `
+	},
+	{
+		slug: "javascript-url-encoding-functions",
+		toolId: "url",
+		title: "JavaScript URL Encoding: encodeURI vs encodeURIComponent",
+		description:
+			"Understanding encodeURI vs encodeURIComponent and when to use each JavaScript function.",
+		tags: ["javascript", "tutorial", "code"],
+		relatedSlugs: ["url-encoding-explained", "url-encoding-security"],
+		content: `
 ## JavaScript URL Functions
 
 JavaScript provides four functions for URL encoding/decoding, and using the wrong one is a common source of bugs.
@@ -336,14 +337,16 @@ console.log(parsed.pathname);     // "/path"
 console.log(parsed.searchParams.get("name")); // "John"
 \`\`\`
 `,
-			},
-			{
-				id: "url-encoding-security",
-				title: "URL Encoding and Security",
-				description:
-					"How improper URL encoding leads to security vulnerabilities like XSS and injection attacks.",
-				tags: ["security", "xss", "best-practices"],
-				content: `
+	},
+	{
+		slug: "url-encoding-security",
+		toolId: "url",
+		title: "URL Encoding and Security: Preventing Injection Attacks",
+		description:
+			"How improper URL encoding leads to security vulnerabilities like XSS and injection attacks.",
+		tags: ["security", "xss", "best-practices"],
+		relatedSlugs: ["url-encoding-explained", "sql-injection-prevention"],
+		content: `
 ## URL Encoding Security
 
 Improper URL encoding is a common source of security vulnerabilities. Understanding these risks is essential for web developers.
@@ -411,20 +414,18 @@ function isAllowedRedirect(url) {
 4. Whitelist allowed redirect domains
 5. Never trust URL parameters without validation
 `,
-			},
-		],
 	},
 
-	jwt: {
+	// ==================== JWT ARTICLES ====================
+	{
+		slug: "what-is-jwt",
 		toolId: "jwt",
-		articles: [
-			{
-				id: "what-is-jwt",
-				title: "Understanding JSON Web Tokens (JWT)",
-				description:
-					"A comprehensive guide to JWTs: what they are, how they work, and their role in modern authentication.",
-				tags: ["basics", "authentication", "security"],
-				content: `
+		title: "Understanding JSON Web Tokens (JWT): A Complete Guide",
+		description:
+			"A comprehensive guide to JWTs: what they are, how they work, and their role in modern authentication.",
+		tags: ["basics", "authentication", "security"],
+		relatedSlugs: ["jwt-security-best-practices", "jwt-vs-sessions"],
+		content: `
 ## What is a JWT?
 
 JSON Web Token (JWT) is an open standard (RFC 7519) for securely transmitting information between parties as a JSON object. JWTs are commonly used for authentication and information exchange.
@@ -492,14 +493,16 @@ HMACSHA256(
 3. **Mobile-friendly**: Easy to use in native apps
 4. **Cross-domain**: Can be used across different domains
 `,
-			},
-			{
-				id: "jwt-security-best-practices",
-				title: "JWT Security Best Practices",
-				description:
-					"Critical security considerations when implementing JWT authentication in your applications.",
-				tags: ["security", "best-practices", "authentication"],
-				content: `
+	},
+	{
+		slug: "jwt-security-best-practices",
+		toolId: "jwt",
+		title: "JWT Security Best Practices for 2024",
+		description:
+			"Critical security considerations when implementing JWT authentication in your applications.",
+		tags: ["security", "best-practices", "authentication"],
+		relatedSlugs: ["what-is-jwt", "jwt-vs-sessions", "base64-not-encryption"],
+		content: `
 ## JWT Security Best Practices
 
 JWTs are powerful but come with security considerations. Follow these practices to keep your implementation secure.
@@ -593,14 +596,16 @@ function isRevoked(token) {
 }
 \`\`\`
 `,
-			},
-			{
-				id: "jwt-vs-sessions",
-				title: "JWT vs Session-Based Authentication",
-				description:
-					"Comparing JWTs with traditional session-based authentication to help you choose the right approach.",
-				tags: ["architecture", "comparison", "authentication"],
-				content: `
+	},
+	{
+		slug: "jwt-vs-sessions",
+		toolId: "jwt",
+		title: "JWT vs Session-Based Authentication: Which Should You Use?",
+		description:
+			"Comparing JWTs with traditional session-based authentication to help you choose the right approach.",
+		tags: ["architecture", "comparison", "authentication"],
+		relatedSlugs: ["what-is-jwt", "jwt-security-best-practices"],
+		content: `
 ## JWT vs Sessions: Which Should You Use?
 
 Both approaches have their place. Understanding the tradeoffs helps you make the right choice.
@@ -682,20 +687,18 @@ Many apps use both:
 // On logout: Invalidate session (blocks refresh)
 \`\`\`
 `,
-			},
-		],
 	},
 
-	qr: {
+	// ==================== QR CODE ARTICLES ====================
+	{
+		slug: "history-of-qr-codes",
 		toolId: "qr",
-		articles: [
-			{
-				id: "history-of-qr-codes",
-				title: "The History of QR Codes",
-				description:
-					"From Toyota factories to global ubiquity: the fascinating origin story of QR codes.",
-				tags: ["history", "basics"],
-				content: `
+		title: "The History of QR Codes: From Toyota to Global Ubiquity",
+		description:
+			"From Toyota factories to global ubiquity: the fascinating origin story of QR codes.",
+		tags: ["history", "basics"],
+		relatedSlugs: ["how-qr-codes-work", "qr-code-javascript-libraries"],
+		content: `
 ## The History of QR Codes
 
 QR codes are everywhere today, but their origin story begins in an unexpected place: automotive manufacturing.
@@ -746,14 +749,16 @@ Today QR codes are used for:
 - Event tickets
 - WiFi sharing
 `,
-			},
-			{
-				id: "how-qr-codes-work",
-				title: "How QR Codes Work: Technical Deep Dive",
-				description:
-					"Understanding the structure, encoding, and error correction that makes QR codes reliable.",
-				tags: ["technical", "encoding", "deep-dive"],
-				content: `
+	},
+	{
+		slug: "how-qr-codes-work",
+		toolId: "qr",
+		title: "How QR Codes Work: A Technical Deep Dive",
+		description:
+			"Understanding the structure, encoding, and error correction that makes QR codes reliable.",
+		tags: ["technical", "encoding", "deep-dive"],
+		relatedSlugs: ["history-of-qr-codes", "qr-code-javascript-libraries"],
+		content: `
 ## How QR Codes Work
 
 QR codes pack a lot of engineering into those black and white squares. Let's explore how they actually work.
@@ -824,14 +829,16 @@ QR codes come in 40 versions (sizes):
 
 To ensure even distribution of dark/light modules, one of 8 mask patterns is applied. The encoder tests all patterns and picks the one with the best score.
 `,
-			},
-			{
-				id: "qr-code-libraries",
-				title: "Best QR Code Libraries for JavaScript",
-				description:
-					"A curated list of QR code libraries for generating and scanning QR codes in JavaScript applications.",
-				tags: ["libraries", "javascript", "tools"],
-				content: `
+	},
+	{
+		slug: "qr-code-javascript-libraries",
+		toolId: "qr",
+		title: "Best QR Code Libraries for JavaScript in 2024",
+		description:
+			"A curated list of QR code libraries for generating and scanning QR codes in JavaScript applications.",
+		tags: ["libraries", "javascript", "tools"],
+		relatedSlugs: ["how-qr-codes-work", "history-of-qr-codes"],
+		content: `
 ## QR Code Libraries for JavaScript
 
 Whether you need to generate or scan QR codes, here are the best libraries available.
@@ -916,20 +923,6 @@ scanner.render(
 );
 \`\`\`
 
-#### jsQR
-
-Pure JavaScript QR scanner (no camera handling).
-
-\`\`\`javascript
-import jsQR from 'jsqr';
-
-// From image data
-const code = jsQR(imageData.data, width, height);
-if (code) {
-  console.log('Found:', code.data);
-}
-\`\`\`
-
 ### React Libraries
 
 #### react-qr-code
@@ -956,191 +949,18 @@ import QRCode from 'react-qr-code';
 | jsQR | 55kb | ❌ | ✅ | Any |
 | react-qr-code | 8kb | ✅ | ❌ | React |
 `,
-			},
-		],
 	},
 
-	base: {
-		toolId: "base",
-		articles: [
-			{
-				id: "number-systems-explained",
-				title: "Number Systems Explained",
-				description:
-					"Understanding binary, octal, decimal, and hexadecimal number systems and their uses in computing.",
-				tags: ["basics", "math", "computing"],
-				content: `
-## Number Systems in Computing
-
-Computers fundamentally work with binary, but we use different number bases for different purposes.
-
-### Why Different Bases?
-
-| Base | Name | Digits | Use Case |
-|------|------|--------|----------|
-| 2 | Binary | 0-1 | How computers actually work |
-| 8 | Octal | 0-7 | Unix file permissions |
-| 10 | Decimal | 0-9 | Human-readable numbers |
-| 16 | Hexadecimal | 0-F | Memory addresses, colors |
-
-### Binary (Base 2)
-
-The foundation of all computing. Each digit is a "bit" representing on (1) or off (0).
-
-\`\`\`
-Decimal 13 in binary:
-13 = 8 + 4 + 0 + 1
-   = 1×2³ + 1×2² + 0×2¹ + 1×2⁰
-   = 1101₂
-\`\`\`
-
-### Hexadecimal (Base 16)
-
-Compact representation of binary. Each hex digit = 4 binary bits.
-
-\`\`\`
-Binary:      1101 0101
-Hexadecimal:    D    5
-
-Common uses:
-- Colors: #FF5733
-- Memory: 0x7FFE0000
-- MAC addresses: AA:BB:CC:DD:EE:FF
-\`\`\`
-
-### Octal (Base 8)
-
-Each octal digit = 3 binary bits. Used in Unix permissions.
-
-\`\`\`
-chmod 755 file
-  7 = rwx (owner)
-  5 = r-x (group)
-  5 = r-x (others)
-
-  7 = 111₂ = read + write + execute
-  5 = 101₂ = read + execute
-\`\`\`
-
-### Quick Conversion Reference
-
-\`\`\`
-Decimal  Binary   Octal   Hex
-   0     0000      0       0
-   1     0001      1       1
-   2     0010      2       2
-   ...
-   9     1001     11       9
-  10     1010     12       A
-  11     1011     13       B
-  12     1100     14       C
-  13     1101     15       D
-  14     1110     16       E
-  15     1111     17       F
-  16    10000     20      10
-\`\`\`
-`,
-			},
-			{
-				id: "javascript-number-conversion",
-				title: "Number Base Conversion in JavaScript",
-				description:
-					"How to convert between number bases using JavaScript's built-in methods and custom functions.",
-				tags: ["javascript", "tutorial", "code"],
-				content: `
-## Number Conversion in JavaScript
-
-JavaScript provides built-in methods for common base conversions.
-
-### parseInt() - String to Number
-
-\`\`\`javascript
-// Parse with specific base (radix)
-parseInt('1010', 2);    // 10 (binary to decimal)
-parseInt('FF', 16);     // 255 (hex to decimal)
-parseInt('777', 8);     // 511 (octal to decimal)
-
-// Without radix, JS guesses (avoid this!)
-parseInt('10');         // 10
-parseInt('010');        // 10 (modern JS) or 8 (old)
-\`\`\`
-
-### toString() - Number to String
-
-\`\`\`javascript
-const num = 255;
-
-num.toString(2);   // "11111111" (binary)
-num.toString(8);   // "377" (octal)
-num.toString(16);  // "ff" (hex)
-num.toString(36);  // "73" (base 36, max)
-\`\`\`
-
-### Combining for Conversion
-
-\`\`\`javascript
-// Binary to Hex
-function binaryToHex(binary) {
-  return parseInt(binary, 2).toString(16);
-}
-binaryToHex('11111111'); // "ff"
-
-// Hex to Binary
-function hexToBinary(hex) {
-  return parseInt(hex, 16).toString(2);
-}
-hexToBinary('ff'); // "11111111"
-
-// Any base to any base
-function convertBase(value, fromBase, toBase) {
-  return parseInt(value, fromBase).toString(toBase);
-}
-convertBase('ff', 16, 2);  // "11111111"
-convertBase('777', 8, 16); // "1ff"
-\`\`\`
-
-### Padding Binary Output
-
-\`\`\`javascript
-function toBinary(num, bits = 8) {
-  return num.toString(2).padStart(bits, '0');
-}
-
-toBinary(5);     // "00000101"
-toBinary(5, 4);  // "0101"
-toBinary(255);   // "11111111"
-\`\`\`
-
-### Handling Large Numbers
-
-For numbers larger than 2^53, use BigInt:
-
-\`\`\`javascript
-const big = BigInt('0xFFFFFFFFFFFFFFFF');
-big.toString(2);
-// "1111111111111111111111111111111111111111111111111111111111111111"
-
-// Parse large binary
-const bigBin = BigInt('0b' + '1'.repeat(64));
-bigBin.toString(16);
-// "ffffffffffffffff"
-\`\`\`
-`,
-			},
-		],
-	},
-
-	// ==================== DATA FORMAT TOOLS ====================
-	json: {
+	// ==================== JSON ARTICLES ====================
+	{
+		slug: "json-complete-guide",
 		toolId: "json",
-		articles: [
-			{
-				id: "json-basics",
-				title: "JSON: The Complete Guide",
-				description:
-					"Everything you need to know about JSON - syntax, data types, and best practices.",
-				tags: ["basics", "data", "web"],
-				content: `
+		title: "JSON: The Complete Guide for Developers",
+		description:
+			"Everything you need to know about JSON - syntax, data types, and best practices.",
+		tags: ["basics", "data", "web"],
+		relatedSlugs: ["json-javascript-guide", "json-schema-validation"],
+		content: `
 ## What is JSON?
 
 JSON (JavaScript Object Notation) is a lightweight data interchange format. It's easy for humans to read and write, and easy for machines to parse and generate.
@@ -1214,14 +1034,16 @@ const json = {
 };
 \`\`\`
 `,
-			},
-			{
-				id: "json-javascript",
-				title: "Working with JSON in JavaScript",
-				description:
-					"Parse, stringify, and manipulate JSON data effectively in JavaScript applications.",
-				tags: ["javascript", "tutorial", "code"],
-				content: `
+	},
+	{
+		slug: "json-javascript-guide",
+		toolId: "json",
+		title: "Working with JSON in JavaScript: Parse, Stringify & More",
+		description:
+			"Parse, stringify, and manipulate JSON data effectively in JavaScript applications.",
+		tags: ["javascript", "tutorial", "code"],
+		relatedSlugs: ["json-complete-guide", "json-schema-validation"],
+		content: `
 ## JSON in JavaScript
 
 JavaScript has built-in support for JSON through the \`JSON\` global object.
@@ -1318,14 +1140,16 @@ const clone = JSON.parse(JSON.stringify(original));
 // - Loses Map, Set, etc.
 \`\`\`
 `,
-			},
-			{
-				id: "json-schema",
-				title: "Validating JSON with JSON Schema",
-				description:
-					"How to define and validate JSON data structures using JSON Schema.",
-				tags: ["validation", "schema", "best-practices"],
-				content: `
+	},
+	{
+		slug: "json-schema-validation",
+		toolId: "json",
+		title: "Validating JSON with JSON Schema: A Practical Guide",
+		description:
+			"How to define and validate JSON data structures using JSON Schema.",
+		tags: ["validation", "schema", "best-practices"],
+		relatedSlugs: ["json-complete-guide", "json-javascript-guide"],
+		content: `
 ## JSON Schema
 
 JSON Schema is a vocabulary for validating JSON documents. It describes the structure and constraints of your data.
@@ -1421,626 +1245,18 @@ console.log(validate.errors);
 // [{ keyword: 'required', ... }, { keyword: 'minimum', ... }]
 \`\`\`
 `,
-			},
-		],
 	},
 
-	yaml: {
-		toolId: "yaml",
-		articles: [
-			{
-				id: "yaml-vs-json",
-				title: "YAML vs JSON: When to Use Each",
-				description:
-					"A comparison of YAML and JSON formats, their strengths, and appropriate use cases.",
-				tags: ["comparison", "data", "config"],
-				content: `
-## YAML vs JSON
-
-Both are data serialization formats, but they serve different purposes best.
-
-### Syntax Comparison
-
-**JSON:**
-\`\`\`json
-{
-  "server": {
-    "host": "localhost",
-    "port": 8080,
-    "ssl": true
-  },
-  "databases": ["mysql", "redis"]
-}
-\`\`\`
-
-**YAML:**
-\`\`\`yaml
-server:
-  host: localhost
-  port: 8080
-  ssl: true
-databases:
-  - mysql
-  - redis
-\`\`\`
-
-### Key Differences
-
-| Feature | JSON | YAML |
-|---------|------|------|
-| Comments | ❌ Not supported | ✅ # comments |
-| Readability | Moderate | High |
-| Verbosity | More punctuation | Minimal |
-| Parsing speed | Faster | Slower |
-| Multi-document | ❌ No | ✅ Yes |
-| Anchors/aliases | ❌ No | ✅ Yes |
-
-### When to Use JSON
-
-- **APIs**: Standard for REST APIs
-- **Data exchange**: Universal support
-- **JavaScript apps**: Native parsing
-- **Performance critical**: Faster parsing
-- **Machine-generated**: Easier to produce
-
-### When to Use YAML
-
-- **Configuration files**: More readable
-- **Docker Compose**: Standard format
-- **Kubernetes**: All manifests are YAML
-- **CI/CD pipelines**: GitHub Actions, GitLab CI
-- **Documentation**: Easier to write by hand
-
-### YAML Superpowers
-
-\`\`\`yaml
-# Multi-line strings
-description: |
-  This is a multi-line
-  string that preserves
-  line breaks.
-
-# Anchors and aliases (DRY)
-defaults: &defaults
-  timeout: 30
-  retries: 3
-
-production:
-  <<: *defaults
-  host: prod.example.com
-
-staging:
-  <<: *defaults
-  host: staging.example.com
-
-# Multiple documents
----
-document: 1
----
-document: 2
-\`\`\`
-`,
-			},
-			{
-				id: "yaml-gotchas",
-				title: "YAML Gotchas Every Developer Should Know",
-				description:
-					"Common YAML pitfalls that cause bugs and how to avoid them.",
-				tags: ["best-practices", "pitfalls", "debugging"],
-				content: `
-## YAML Gotchas
-
-YAML's flexibility can lead to unexpected behavior. Here are the most common pitfalls.
-
-### 1. The Norway Problem
-
-\`\`\`yaml
-# These are parsed as booleans!
-country: NO      # false
-answer: YES      # true
-maybe: on        # true
-disabled: off    # false
-
-# Fix: Quote strings
-country: "NO"
-answer: "YES"
-\`\`\`
-
-### 2. Unquoted Strings
-
-\`\`\`yaml
-# Surprise! These aren't strings:
-version: 1.0     # Float: 1.0
-port: 8080       # Integer: 8080
-time: 12:30      # Sexagesimal: 750 (12*60+30)!
-date: 2024-01-15 # Date object
-
-# Fix: Quote when you want strings
-version: "1.0"
-time: "12:30"
-\`\`\`
-
-### 3. Indentation Sensitivity
-
-\`\`\`yaml
-# This is an object
-parent:
-  child: value
-
-# This is a string "child: value"
-parent: 
-child: value
-
-# Tabs vs spaces (use spaces!)
-parent:
-	child: broken  # Tab = error in many parsers
-\`\`\`
-
-### 4. Empty Values
-
-\`\`\`yaml
-# These are all null:
-key1:
-key2: null
-key3: ~
-key4:
-
-# Empty string needs quotes:
-key5: ""
-\`\`\`
-
-### 5. Special Characters
-
-\`\`\`yaml
-# Colon in value needs quoting
-url: "https://example.com"
-
-# Or use a space after the colon
-url: https://example.com  # Works, but risky
-
-# Hash in value needs quoting
-color: "#FF5733"
-
-# Otherwise it's a comment
-color: #FF5733  # Everything after # is gone!
-\`\`\`
-
-### 6. Multi-line String Styles
-
-\`\`\`yaml
-# Literal (preserves newlines)
-literal: |
-  line 1
-  line 2
-
-# Folded (joins lines with spaces)
-folded: >
-  this becomes
-  one line
-
-# With chomping indicators
-keep_final_newline: |+
-  text
-
-strip_final_newline: |-
-  text
-\`\`\`
-
-### Safe YAML Parsing
-
-\`\`\`javascript
-import yaml from 'js-yaml';
-
-// Use safeLoad to prevent code execution
-const data = yaml.load(yamlString, { schema: yaml.JSON_SCHEMA });
-\`\`\`
-`,
-			},
-		],
-	},
-
-	env: {
-		toolId: "env",
-		articles: [
-			{
-				id: "env-files-guide",
-				title: "Complete Guide to .env Files",
-				description:
-					"How to use .env files for configuration, best practices, and common patterns.",
-				tags: ["basics", "config", "security"],
-				content: `
-## Understanding .env Files
-
-Environment files (.env) store configuration as key-value pairs, keeping sensitive data out of your code.
-
-### Basic Syntax
-
-\`\`\`bash
-# Database configuration
-DATABASE_URL=postgresql://localhost:5432/mydb
-DATABASE_POOL_SIZE=10
-
-# API Keys
-API_KEY=sk_live_abc123
-API_SECRET=your_secret_here
-
-# Feature flags
-ENABLE_FEATURE_X=true
-DEBUG_MODE=false
-
-# Multi-line values (varies by parser)
-PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----
-MIIEpAIBAAKCAQEA...
------END RSA PRIVATE KEY-----"
-\`\`\`
-
-### Loading .env Files
-
-**Node.js with dotenv:**
-\`\`\`javascript
-npm install dotenv
-\`\`\`
-
-\`\`\`javascript
-require('dotenv').config();
-// or
-import 'dotenv/config';
-
-// Access variables
-const dbUrl = process.env.DATABASE_URL;
-\`\`\`
-
-**Python with python-dotenv:**
-\`\`\`python
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-db_url = os.getenv('DATABASE_URL')
-\`\`\`
-
-### Multiple Environments
-
-\`\`\`
-.env                 # Default/shared values
-.env.local           # Local overrides (gitignored)
-.env.development     # Development settings
-.env.production      # Production settings
-.env.test            # Test settings
-\`\`\`
-
-### Priority Order (typical)
-
-1. Actual environment variables
-2. \`.env.{environment}.local\`
-3. \`.env.local\`
-4. \`.env.{environment}\`
-5. \`.env\`
-
-### What NOT to Put in .env
-
-- Anything that should be in code
-- Non-sensitive configuration
-- Values that never change
-- Large data or files
-`,
-			},
-			{
-				id: "env-security",
-				title: ".env Security Best Practices",
-				description:
-					"How to handle environment variables securely and avoid common security mistakes.",
-				tags: ["security", "best-practices", "devops"],
-				content: `
-## .env Security
-
-Environment variables are for secrets, but they need proper handling to stay secure.
-
-### The Golden Rules
-
-1. **Never commit .env files**
-\`\`\`gitignore
-# .gitignore
-.env
-.env.local
-.env.*.local
-\`\`\`
-
-2. **Provide a template**
-\`\`\`bash
-# .env.example (safe to commit)
-DATABASE_URL=postgresql://localhost:5432/mydb
-API_KEY=your_api_key_here
-SECRET_KEY=generate_a_secret
-\`\`\`
-
-### Common Mistakes
-
-\`\`\`javascript
-// ❌ WRONG: Exposing to client-side
-const config = {
-  apiKey: process.env.API_KEY  // Bundled in JS!
-};
-
-// ❌ WRONG: Logging secrets
-console.log('Config:', process.env);
-
-// ❌ WRONG: Error messages with secrets
-throw new Error(\`DB failed: \${process.env.DATABASE_URL}\`);
-\`\`\`
-
-### Client vs Server Variables
-
-\`\`\`bash
-# Next.js example
-# Server-only (not exposed)
-DATABASE_URL=...
-API_SECRET=...
-
-# Client-exposed (prefixed)
-NEXT_PUBLIC_API_URL=https://api.example.com
-NEXT_PUBLIC_ANALYTICS_ID=UA-12345
-\`\`\`
-
-### Production Best Practices
-
-1. **Use a secrets manager**
-   - AWS Secrets Manager
-   - HashiCorp Vault
-   - Google Secret Manager
-   - Azure Key Vault
-
-2. **Rotate secrets regularly**
-\`\`\`bash
-# Document rotation procedure
-# 1. Generate new secret
-# 2. Add new secret (support both)
-# 3. Update all services
-# 4. Remove old secret
-\`\`\`
-
-3. **Principle of least privilege**
-   - Each service gets only needed secrets
-   - Use separate credentials per environment
-   - Audit access regularly
-
-4. **Encrypt at rest**
-   - Don't store plaintext secrets in CI/CD
-   - Use encrypted secret storage
-   - Encrypt backups containing secrets
-`,
-			},
-		],
-	},
-
-	sql: {
-		toolId: "sql",
-		articles: [
-			{
-				id: "sql-formatting-guide",
-				title: "SQL Formatting Best Practices",
-				description:
-					"Write readable, maintainable SQL with consistent formatting conventions.",
-				tags: ["best-practices", "style", "readability"],
-				content: `
-## SQL Formatting Guide
-
-Well-formatted SQL is easier to read, review, and maintain. Here are industry-standard conventions.
-
-### Basic Formatting Rules
-
-\`\`\`sql
--- ✅ Good: Keywords uppercase, proper indentation
-SELECT
-    u.id,
-    u.name,
-    u.email,
-    COUNT(o.id) AS order_count
-FROM users u
-LEFT JOIN orders o ON o.user_id = u.id
-WHERE u.status = 'active'
-    AND u.created_at > '2024-01-01'
-GROUP BY u.id, u.name, u.email
-HAVING COUNT(o.id) > 5
-ORDER BY order_count DESC
-LIMIT 100;
-
--- ❌ Bad: Hard to read
-select u.id,u.name,u.email,count(o.id) as order_count from users u left join orders o on o.user_id=u.id where u.status='active' and u.created_at>'2024-01-01' group by u.id,u.name,u.email having count(o.id)>5 order by order_count desc limit 100;
-\`\`\`
-
-### Column Lists
-
-\`\`\`sql
--- One column per line for many columns
-SELECT
-    id,
-    first_name,
-    last_name,
-    email,
-    phone,
-    created_at,
-    updated_at
-FROM users;
-
--- Inline for few columns
-SELECT id, name FROM users;
-\`\`\`
-
-### JOIN Formatting
-
-\`\`\`sql
-SELECT
-    o.id,
-    o.total,
-    u.name AS customer_name,
-    p.name AS product_name
-FROM orders o
-INNER JOIN users u
-    ON u.id = o.user_id
-LEFT JOIN order_items oi
-    ON oi.order_id = o.id
-LEFT JOIN products p
-    ON p.id = oi.product_id
-WHERE o.status = 'completed';
-\`\`\`
-
-### Subqueries
-
-\`\`\`sql
-SELECT
-    u.name,
-    u.email,
-    (
-        SELECT COUNT(*)
-        FROM orders
-        WHERE user_id = u.id
-    ) AS order_count
-FROM users u
-WHERE u.id IN (
-    SELECT DISTINCT user_id
-    FROM orders
-    WHERE total > 1000
-);
-\`\`\`
-
-### CTEs (Common Table Expressions)
-
-\`\`\`sql
-WITH active_users AS (
-    SELECT id, name, email
-    FROM users
-    WHERE status = 'active'
-),
-user_orders AS (
-    SELECT
-        user_id,
-        COUNT(*) AS order_count,
-        SUM(total) AS total_spent
-    FROM orders
-    GROUP BY user_id
-)
-SELECT
-    au.name,
-    au.email,
-    COALESCE(uo.order_count, 0) AS orders,
-    COALESCE(uo.total_spent, 0) AS spent
-FROM active_users au
-LEFT JOIN user_orders uo ON uo.user_id = au.id
-ORDER BY spent DESC;
-\`\`\`
-`,
-			},
-			{
-				id: "sql-injection",
-				title: "Preventing SQL Injection",
-				description:
-					"Understanding SQL injection attacks and how to write secure database queries.",
-				tags: ["security", "injection", "best-practices"],
-				content: `
-## SQL Injection Prevention
-
-SQL injection remains one of the most dangerous and common web vulnerabilities.
-
-### What is SQL Injection?
-
-Attackers insert malicious SQL through user input:
-
-\`\`\`javascript
-// Vulnerable code
-const query = \`SELECT * FROM users WHERE id = \${userId}\`;
-
-// Attacker input: "1; DROP TABLE users; --"
-// Resulting query:
-// SELECT * FROM users WHERE id = 1; DROP TABLE users; --
-\`\`\`
-
-### Prevention: Parameterized Queries
-
-**Node.js (pg):**
-\`\`\`javascript
-// ❌ WRONG: String concatenation
-const query = \`SELECT * FROM users WHERE email = '\${email}'\`;
-
-// ✅ CORRECT: Parameterized query
-const query = 'SELECT * FROM users WHERE email = $1';
-const result = await client.query(query, [email]);
-\`\`\`
-
-**Python (psycopg2):**
-\`\`\`python
-# ❌ WRONG
-cursor.execute(f"SELECT * FROM users WHERE email = '{email}'")
-
-# ✅ CORRECT
-cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
-\`\`\`
-
-### ORMs and Query Builders
-
-\`\`\`javascript
-// Prisma (safe by default)
-const user = await prisma.user.findUnique({
-  where: { email: userInput }
-});
-
-// Knex.js
-const users = await knex('users')
-  .where('email', userInput)
-  .select('*');
-
-// Be careful with raw queries!
-// ❌ Still vulnerable
-knex.raw(\`SELECT * FROM users WHERE email = '\${email}'\`);
-
-// ✅ Safe raw query
-knex.raw('SELECT * FROM users WHERE email = ?', [email]);
-\`\`\`
-
-### Input Validation (Defense in Depth)
-
-\`\`\`javascript
-// Even with parameterized queries, validate input
-function validateEmail(email) {
-  const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
-  if (!emailRegex.test(email)) {
-    throw new Error('Invalid email format');
-  }
-  return email;
-}
-
-// Validate IDs are actually numbers
-function validateId(id) {
-  const parsed = parseInt(id, 10);
-  if (isNaN(parsed) || parsed < 1) {
-    throw new Error('Invalid ID');
-  }
-  return parsed;
-}
-\`\`\`
-
-### Additional Protections
-
-1. **Least privilege**: DB user should only have needed permissions
-2. **Stored procedures**: Pre-compiled queries when possible
-3. **WAF**: Web Application Firewall as additional layer
-4. **Error handling**: Don't expose SQL errors to users
-`,
-			},
-		],
-	},
-
-	// ==================== GENERATOR TOOLS ====================
-	uuid: {
+	// ==================== UUID ARTICLES ====================
+	{
+		slug: "uuid-versions-explained",
 		toolId: "uuid",
-		articles: [
-			{
-				id: "uuid-versions-explained",
-				title: "UUID Versions Explained",
-				description:
-					"Understanding the different UUID versions, their use cases, and how to choose the right one.",
-				tags: ["basics", "versions", "comparison"],
-				content: `
+		title: "UUID Versions Explained: v1, v4, v5, and v7 Compared",
+		description:
+			"Understanding the different UUID versions, their use cases, and how to choose the right one.",
+		tags: ["basics", "versions", "comparison"],
+		relatedSlugs: ["uuid-database-best-practices"],
+		content: `
 ## UUID Versions
 
 UUID (Universally Unique Identifier) has several versions, each with different properties.
@@ -2117,14 +1333,16 @@ UUID v4 has 2^122 possible values. The probability of collision:
 - You'd need 2.71 × 10^18 UUIDs for 50% collision chance
 - That's generating 1 billion UUIDs per second for 85 years
 `,
-			},
-			{
-				id: "uuid-in-databases",
-				title: "Using UUIDs in Databases",
-				description:
-					"Best practices for storing and indexing UUIDs in SQL and NoSQL databases.",
-				tags: ["database", "performance", "best-practices"],
-				content: `
+	},
+	{
+		slug: "uuid-database-best-practices",
+		toolId: "uuid",
+		title: "Using UUIDs in Databases: Performance & Best Practices",
+		description:
+			"Best practices for storing and indexing UUIDs in SQL and NoSQL databases.",
+		tags: ["database", "performance", "best-practices"],
+		relatedSlugs: ["uuid-versions-explained"],
+		content: `
 ## UUIDs in Databases
 
 UUIDs are great for distributed systems, but require careful handling in databases.
@@ -2212,20 +1430,18 @@ CREATE INDEX idx_users_created_id ON users (created_at, id);
 | Security | ✅ Not guessable | ❌ Sequential |
 | Merging data | ✅ Easy | ❌ Conflicts |
 `,
-			},
-		],
 	},
 
-	hash: {
+	// ==================== HASH ARTICLES ====================
+	{
+		slug: "cryptographic-hash-functions-explained",
 		toolId: "hash",
-		articles: [
-			{
-				id: "hash-functions-explained",
-				title: "Cryptographic Hash Functions Explained",
-				description:
-					"Understanding hash functions, their properties, and when to use different algorithms.",
-				tags: ["basics", "cryptography", "security"],
-				content: `
+		title: "Cryptographic Hash Functions Explained: SHA-256, MD5 & More",
+		description:
+			"Understanding hash functions, their properties, and when to use different algorithms.",
+		tags: ["basics", "cryptography", "security"],
+		relatedSlugs: ["password-hashing-best-practices"],
+		content: `
 ## What is a Hash Function?
 
 A hash function takes input data of any size and produces a fixed-size output (the "hash" or "digest").
@@ -2273,14 +1489,16 @@ Completely different output!
 | Checksums | SHA-256 or BLAKE3 |
 | Git commits | SHA-1 (legacy) → SHA-256 |
 `,
-			},
-			{
-				id: "hashing-for-passwords",
-				title: "Password Hashing Done Right",
-				description:
-					"Why regular hashing is wrong for passwords and how to properly secure user credentials.",
-				tags: ["security", "passwords", "best-practices"],
-				content: `
+	},
+	{
+		slug: "password-hashing-best-practices",
+		toolId: "hash",
+		title: "Password Hashing Done Right: bcrypt, Argon2 & Security",
+		description:
+			"Why regular hashing is wrong for passwords and how to properly secure user credentials.",
+		tags: ["security", "passwords", "best-practices"],
+		relatedSlugs: ["cryptographic-hash-functions-explained", "secure-password-generation"],
+		content: `
 ## Password Hashing
 
 Regular hash functions (SHA-256, etc.) are NOT suitable for passwords. Here's why and what to use instead.
@@ -2351,157 +1569,18 @@ const isMatch = await argon2.verify(hash, password);
 6. **Implement rate limiting**
 7. **Use secure password requirements**
 `,
-			},
-		],
 	},
 
-	lorem: {
-		toolId: "lorem",
-		articles: [
-			{
-				id: "history-of-lorem-ipsum",
-				title: "The History of Lorem Ipsum",
-				description:
-					"The surprising 500-year history of the world's most famous placeholder text.",
-				tags: ["history", "design", "typography"],
-				content: `
-## The History of Lorem Ipsum
-
-Lorem Ipsum has been the industry's standard dummy text since the 1500s, but its story is often misunderstood.
-
-### Ancient Origins
-
-Lorem Ipsum is derived from "De finibus bonorum et malorum" (On the Ends of Good and Evil) by Cicero, written in 45 BC. It's a treatise on ethics, not random Latin.
-
-### The Original Text
-
-\`\`\`
-"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, 
-consectetur, adipisci velit..."
-
-Translation: "There is no one who loves pain itself, who seeks 
-after it and wants to have it, simply because it is pain..."
-\`\`\`
-
-### How It Became "Lorem Ipsum"
-
-The standard Lorem Ipsum passage was created by scrambling the original Cicero text:
-
-1. Words were removed
-2. Letters were added/removed
-3. The result is pseudo-Latin (mostly nonsense)
-
-### First Print Use (1500s)
-
-An unknown printer scrambled Cicero's text to create a type specimen book. This was used to showcase fonts without the distraction of readable content.
-
-### Modern Revival (1960s)
-
-Letraset sheets featuring Lorem Ipsum became popular with graphic designers and typesetters. This standardized its use across the industry.
-
-### Digital Era (1980s-Present)
-
-- **1985**: Aldus PageMaker includes Lorem Ipsum
-- **1990s**: Web design adopts it universally
-- **Today**: Built into most design tools
-
-### The Standard Passage
-
-\`\`\`
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim 
-ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut 
-aliquip ex ea commodo consequat.
-\`\`\`
-`,
-			},
-			{
-				id: "lorem-ipsum-alternatives",
-				title: "Lorem Ipsum Alternatives for Developers",
-				description:
-					"Fun and useful alternatives to Lorem Ipsum for placeholder text in your projects.",
-				tags: ["tools", "alternatives", "fun"],
-				content: `
-## Lorem Ipsum Alternatives
-
-Sometimes you want placeholder text that's more interesting—or more realistic.
-
-### Fun Alternatives
-
-**Bacon Ipsum** - Meaty placeholder text
-\`\`\`
-Bacon ipsum dolor amet hamburger pork chop leberkas ham hock 
-ribeye meatloaf pig ball tip biltong buffalo strip steak ham.
-\`\`\`
-
-**Cupcake Ipsum** - Sweet placeholder
-\`\`\`
-Cupcake ipsum dolor sit amet tootsie roll dragée tiramisu. 
-Powder chocolate bar jelly beans marshmallow jujubes.
-\`\`\`
-
-**Hipster Ipsum** - Artisanal filler
-\`\`\`
-Craft beer pork belly aesthetic, 8-bit meditation sustainable 
-hella polaroid artisan direct trade squid.
-\`\`\`
-
-**Pirate Ipsum** - Arr!
-\`\`\`
-Prow scuttle parrel provost Sail ho shrouds spirits boom 
-mizzenmast yardarm. Pinnace holystone mizzenmast quarter crow's.
-\`\`\`
-
-### Practical Alternatives
-
-**Office Ipsum** - Corporate speak
-\`\`\`
-Let's circle back on this and leverage our synergies to move the 
-needle on key deliverables and drive stakeholder alignment.
-\`\`\`
-
-**Legal Ipsum** - Legal jargon
-\`\`\`
-Whereas the party of the first part hereinafter agrees to 
-indemnify and hold harmless the party of the second part...
-\`\`\`
-
-### Real Content Approaches
-
-**Wikipedia excerpts**: Use public domain text
-**News headlines**: Scraped and anonymized
-**Books**: Out-of-copyright literature
-
-### Generator Libraries
-
-\`\`\`javascript
-// faker.js - Realistic fake data
-import { faker } from '@faker-js/faker';
-
-faker.lorem.paragraph();
-faker.lorem.sentences(3);
-faker.person.fullName();
-faker.internet.email();
-
-// For specific domains
-faker.commerce.productDescription();
-faker.company.catchPhrase();
-\`\`\`
-`,
-			},
-		],
-	},
-
-	password: {
+	// ==================== PASSWORD ARTICLES ====================
+	{
+		slug: "password-entropy-explained",
 		toolId: "password",
-		articles: [
-			{
-				id: "password-entropy",
-				title: "Understanding Password Entropy",
-				description:
-					"The math behind password strength: what entropy means and why it matters.",
-				tags: ["security", "math", "basics"],
-				content: `
+		title: "Understanding Password Entropy: The Math Behind Strong Passwords",
+		description:
+			"The math behind password strength: what entropy means and why it matters.",
+		tags: ["security", "math", "basics"],
+		relatedSlugs: ["secure-password-generation", "password-hashing-best-practices"],
+		content: `
 ## Password Entropy
 
 Entropy measures password strength in bits. Higher entropy = harder to crack.
@@ -2558,27 +1637,17 @@ At 1 trillion guesses/second:
 - **Minimum**: 60 bits (important accounts)
 - **Good**: 70-80 bits (sensitive data)
 - **Excellent**: 90+ bits (critical systems)
-
-### The Passphrase Advantage
-
-\`\`\`
-Random password: "j7#kL9$m"  (52 bits)
-Passphrase:      "correct horse battery staple" (44+ bits*)
-
-*With dictionary attacks considered, but:
-- Easier to remember
-- Easier to type
-- Add more words for more entropy
-\`\`\`
 `,
-			},
-			{
-				id: "secure-password-generation",
-				title: "Generating Cryptographically Secure Passwords",
-				description:
-					"How to generate truly random passwords using proper cryptographic methods.",
-				tags: ["code", "security", "cryptography"],
-				content: `
+	},
+	{
+		slug: "secure-password-generation",
+		toolId: "password",
+		title: "Generating Cryptographically Secure Passwords in JavaScript",
+		description:
+			"How to generate truly random passwords using proper cryptographic methods.",
+		tags: ["code", "security", "cryptography"],
+		relatedSlugs: ["password-entropy-explained", "password-hashing-best-practices"],
+		content: `
 ## Secure Password Generation
 
 Not all random is created equal. Here's how to generate passwords properly.
@@ -2664,248 +1733,19 @@ function generatePassphrase(wordCount = 4) {
 
 // Output: "correct-horse-battery-staple"
 \`\`\`
-
-### Libraries
-
-\`\`\`javascript
-// generate-password (npm)
-import generator from 'generate-password';
-
-const password = generator.generate({
-  length: 16,
-  numbers: true,
-  symbols: true,
-  uppercase: true,
-  strict: true  // At least one of each
-});
-\`\`\`
 `,
-			},
-		],
 	},
 
-	// ==================== TEXT TOOLS ====================
-	diff: {
-		toolId: "diff",
-		articles: [
-			{
-				id: "diff-algorithms",
-				title: "How Diff Algorithms Work",
-				description:
-					"Understanding the algorithms behind text comparison tools like Git diff.",
-				tags: ["algorithms", "technical", "git"],
-				content: `
-## Diff Algorithms
-
-Diff tools find the differences between two texts. Here's how they work.
-
-### The Problem
-
-Given two sequences, find the minimum edit operations (insert, delete) to transform one into the other.
-
-\`\`\`
-Text A: "ABCDEF"
-Text B: "ABXDEF"
-
-Diff: Replace C with X (or delete C, insert X)
-\`\`\`
-
-### Longest Common Subsequence (LCS)
-
-Most diff algorithms are based on finding the LCS.
-
-\`\`\`
-A: "ABCDEF"
-B: "ABXDEF"
-LCS: "ABDEF" (length 5)
-
-Difference = chars not in LCS
-A has: C (deleted)
-B has: X (inserted)
-\`\`\`
-
-### Myers' Algorithm
-
-The standard algorithm (used by Git). Finds the shortest edit script.
-
-\`\`\`
-Time: O((N+M)×D) where D = edit distance
-Space: O((N+M)×D) or O(N+M) with optimization
-
-For similar files (small D): Nearly linear
-For very different files: Up to O(N×M)
-\`\`\`
-
-### Patience Diff
-
-Alternative algorithm that produces more readable diffs.
-
-\`\`\`
-1. Find unique lines that appear once in both files
-2. Use these as "anchors"
-3. Recursively diff between anchors
-
-Better for:
-- Code refactoring
-- Moved blocks of code
-- Structural changes
-\`\`\`
-
-### Git Diff Options
-
-\`\`\`bash
-# Default (Myers)
-git diff
-
-# Patience algorithm
-git diff --patience
-
-# Minimal diff
-git diff --minimal
-
-# Histogram (faster patience)
-git diff --histogram
-\`\`\`
-
-### Output Formats
-
-**Unified Diff** (most common):
-\`\`\`diff
---- a/file.txt
-+++ b/file.txt
-@@ -1,4 +1,4 @@
- line 1
--old line 2
-+new line 2
- line 3
-\`\`\`
-
-**Side-by-side**:
-\`\`\`
-line 1          | line 1
-old line 2      | new line 2
-line 3          | line 3
-\`\`\`
-`,
-			},
-			{
-				id: "diff-in-javascript",
-				title: "Implementing Diff in JavaScript",
-				description:
-					"Libraries and techniques for comparing text in JavaScript applications.",
-				tags: ["javascript", "code", "libraries"],
-				content: `
-## Diff in JavaScript
-
-Several libraries make text comparison easy in JavaScript.
-
-### diff (npm)
-
-The most popular diff library.
-
-\`\`\`javascript
-npm install diff
-\`\`\`
-
-\`\`\`javascript
-import * as Diff from 'diff';
-
-// Character-level diff
-const diff = Diff.diffChars('hello', 'hallo');
-diff.forEach(part => {
-  const color = part.added ? 'green' : part.removed ? 'red' : 'grey';
-  console.log(part.value, color);
-});
-
-// Word-level diff
-const wordDiff = Diff.diffWords('hello world', 'hello there');
-
-// Line-level diff
-const lineDiff = Diff.diffLines(oldText, newText);
-
-// Create patch
-const patch = Diff.createPatch('file.txt', oldText, newText);
-
-// Apply patch
-const result = Diff.applyPatch(oldText, patch);
-\`\`\`
-
-### jsdiff Output Format
-
-\`\`\`javascript
-[
-  { value: 'hel', count: 3 },
-  { value: 'l', count: 1, removed: true },
-  { value: 'a', count: 1, added: true },
-  { value: 'o', count: 1 }
-]
-\`\`\`
-
-### diff2html
-
-Render diffs as HTML.
-
-\`\`\`javascript
-import { html } from 'diff2html';
-
-const diffString = \`
---- a/file.txt
-+++ b/file.txt
-@@ -1,3 +1,3 @@
- line 1
--old line
-+new line
- line 3
-\`;
-
-const htmlOutput = html(diffString, {
-  drawFileList: true,
-  outputFormat: 'side-by-side'
-});
-\`\`\`
-
-### Simple Custom Implementation
-
-\`\`\`javascript
-// Basic line diff for simple cases
-function simpleDiff(oldText, newText) {
-  const oldLines = oldText.split('\\n');
-  const newLines = newText.split('\\n');
-  const result = [];
-  
-  let i = 0, j = 0;
-  while (i < oldLines.length || j < newLines.length) {
-    if (i >= oldLines.length) {
-      result.push({ type: 'add', line: newLines[j++] });
-    } else if (j >= newLines.length) {
-      result.push({ type: 'remove', line: oldLines[i++] });
-    } else if (oldLines[i] === newLines[j]) {
-      result.push({ type: 'same', line: oldLines[i] });
-      i++; j++;
-    } else {
-      result.push({ type: 'remove', line: oldLines[i++] });
-      result.push({ type: 'add', line: newLines[j++] });
-    }
-  }
-  
-  return result;
-}
-\`\`\`
-`,
-			},
-		],
-	},
-
-	regex: {
+	// ==================== REGEX ARTICLES ====================
+	{
+		slug: "regex-beginners-guide",
 		toolId: "regex",
-		articles: [
-			{
-				id: "regex-basics",
-				title: "Regular Expressions: A Beginner's Guide",
-				description:
-					"Learn regex from scratch with clear examples and explanations.",
-				tags: ["basics", "tutorial", "beginner"],
-				content: `
+		title: "Regular Expressions: A Beginner's Guide",
+		description:
+			"Learn regex from scratch with clear examples and explanations.",
+		tags: ["basics", "tutorial", "beginner"],
+		relatedSlugs: ["regex-advanced-techniques"],
+		content: `
 ## Regular Expressions Basics
 
 Regular expressions (regex) are patterns for matching text. They're powerful but can be intimidating at first.
@@ -2968,14 +1808,6 @@ Regular expressions (regex) are patterns for matching text. They're powerful but
 /\\bhello\\b/    // "hello" as whole word
 \`\`\`
 
-### Groups
-
-\`\`\`javascript
-/(abc)+/       // One or more "abc"
-/(a|b|c)/      // a OR b OR c
-/(?:abc)/      // Non-capturing group
-\`\`\`
-
 ### Common Patterns
 
 \`\`\`javascript
@@ -2992,14 +1824,16 @@ Regular expressions (regex) are patterns for matching text. They're powerful but
 /\\d{4}-\\d{2}-\\d{2}/
 \`\`\`
 `,
-			},
-			{
-				id: "regex-advanced",
-				title: "Advanced Regex Techniques",
-				description:
-					"Lookaheads, lookbehinds, and other advanced regex features.",
-				tags: ["advanced", "techniques", "patterns"],
-				content: `
+	},
+	{
+		slug: "regex-advanced-techniques",
+		toolId: "regex",
+		title: "Advanced Regex: Lookaheads, Lookbehinds & Named Groups",
+		description:
+			"Lookaheads, lookbehinds, and other advanced regex features for power users.",
+		tags: ["advanced", "techniques", "patterns"],
+		relatedSlugs: ["regex-beginners-guide"],
+		content: `
 ## Advanced Regex
 
 Once you've mastered the basics, these advanced features unlock even more power.
@@ -3042,16 +1876,6 @@ console.log(match.groups.month);  // "01"
 console.log(match.groups.day);    // "15"
 \`\`\`
 
-### Backreferences
-
-\`\`\`javascript
-// Match repeated words
-/(\\w+)\\s+\\1/    // "the the" matches
-
-// Named backreference
-/(?<word>\\w+)\\s+\\k<word>/
-\`\`\`
-
 ### Non-Greedy Matching
 
 \`\`\`javascript
@@ -3060,17 +1884,6 @@ console.log(match.groups.day);    // "15"
 
 // Non-greedy: matches as little as possible
 /<.*?>/g.exec("<a><b>")    // ["<a>"]
-\`\`\`
-
-### Unicode Support
-
-\`\`\`javascript
-// Unicode flag
-/\\p{Emoji}/u      // Match emoji
-/\\p{Script=Greek}/u  // Match Greek letters
-
-// Example
-"Hello 👋 World".match(/\\p{Emoji}/gu)  // ["👋"]
 \`\`\`
 
 ### Practical Examples
@@ -3089,274 +1902,18 @@ console.log(match.groups.day);    // "15"
 /^\\d{4}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}$/
 \`\`\`
 `,
-			},
-		],
 	},
 
-	markdown: {
-		toolId: "markdown",
-		articles: [
-			{
-				id: "markdown-syntax",
-				title: "Complete Markdown Syntax Reference",
-				description:
-					"Every Markdown syntax element you need to know, from basic to extended.",
-				tags: ["syntax", "reference", "basics"],
-				content: `
-## Markdown Syntax Reference
-
-Markdown is a lightweight markup language for creating formatted text.
-
-### Headings
-
-\`\`\`markdown
-# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
-\`\`\`
-
-### Text Formatting
-
-\`\`\`markdown
-**bold** or __bold__
-*italic* or _italic_
-***bold and italic***
-~~strikethrough~~
-\`inline code\`
-\`\`\`
-
-### Links and Images
-
-\`\`\`markdown
-[Link text](https://example.com)
-[Link with title](https://example.com "Title")
-![Alt text](image.jpg)
-![Alt text](image.jpg "Image title")
-
-<!-- Reference style -->
-[link][ref]
-[ref]: https://example.com
-\`\`\`
-
-### Lists
-
-\`\`\`markdown
-<!-- Unordered -->
-- Item 1
-- Item 2
-  - Nested item
-  - Another nested
-
-<!-- Ordered -->
-1. First
-2. Second
-3. Third
-
-<!-- Task list -->
-- [x] Completed task
-- [ ] Incomplete task
-\`\`\`
-
-### Code Blocks
-
-\`\`\`\`markdown
-\`\`\`javascript
-const greeting = "Hello, World!";
-console.log(greeting);
-\`\`\`
-\`\`\`\`
-
-### Blockquotes
-
-\`\`\`markdown
-> This is a quote.
->
-> It can span multiple paragraphs.
->
-> > Nested quotes work too.
-\`\`\`
-
-### Tables
-
-\`\`\`markdown
-| Header 1 | Header 2 | Header 3 |
-|----------|:--------:|---------:|
-| Left     | Center   | Right    |
-| aligned  | aligned  | aligned  |
-\`\`\`
-
-### Horizontal Rule
-
-\`\`\`markdown
----
-***
-___
-\`\`\`
-
-### Extended Syntax
-
-\`\`\`markdown
-<!-- Footnotes -->
-Here's a sentence with a footnote.[^1]
-[^1]: This is the footnote.
-
-<!-- Definition lists -->
-Term
-: Definition
-
-<!-- Abbreviations -->
-*[HTML]: Hyper Text Markup Language
-
-<!-- Emoji (GitHub) -->
-:smile: :rocket: :+1:
-\`\`\`
-`,
-			},
-			{
-				id: "markdown-libraries",
-				title: "Best Markdown Libraries for JavaScript",
-				description:
-					"Parsing, rendering, and extending Markdown in JavaScript applications.",
-				tags: ["javascript", "libraries", "tools"],
-				content: `
-## Markdown Libraries
-
-Choose the right library for your Markdown needs.
-
-### marked
-
-Fast and lightweight. Good for basic needs.
-
-\`\`\`javascript
-npm install marked
-\`\`\`
-
-\`\`\`javascript
-import { marked } from 'marked';
-
-const html = marked.parse('# Hello World');
-// <h1>Hello World</h1>
-
-// With options
-marked.setOptions({
-  gfm: true,        // GitHub Flavored Markdown
-  breaks: true,     // Convert \\n to <br>
-  headerIds: true,  // Add IDs to headings
-});
-\`\`\`
-
-### markdown-it
-
-Extensible and CommonMark compliant.
-
-\`\`\`javascript
-npm install markdown-it
-\`\`\`
-
-\`\`\`javascript
-import MarkdownIt from 'markdown-it';
-
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true
-});
-
-const html = md.render('# Hello *World*');
-
-// Add plugins
-import emoji from 'markdown-it-emoji';
-import anchor from 'markdown-it-anchor';
-
-md.use(emoji)
-  .use(anchor, { permalink: true });
-\`\`\`
-
-### remark
-
-Part of the unified ecosystem. Best for transformations.
-
-\`\`\`javascript
-npm install remark remark-html
-\`\`\`
-
-\`\`\`javascript
-import { remark } from 'remark';
-import html from 'remark-html';
-
-const result = await remark()
-  .use(html)
-  .process('# Hello World');
-
-console.log(String(result));
-
-// With MDX (JSX in Markdown)
-import { compile } from '@mdx-js/mdx';
-const code = await compile('# Hello <Button />');
-\`\`\`
-
-### react-markdown
-
-Render Markdown as React components.
-
-\`\`\`jsx
-npm install react-markdown
-\`\`\`
-
-\`\`\`jsx
-import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-
-function Article({ content }) {
-  return (
-    <ReactMarkdown
-      components={{
-        code({ node, inline, className, children, ...props }) {
-          const match = /language-(\\w+)/.exec(className || '');
-          return !inline && match ? (
-            <SyntaxHighlighter language={match[1]}>
-              {String(children)}
-            </SyntaxHighlighter>
-          ) : (
-            <code className={className} {...props}>
-              {children}
-            </code>
-          );
-        }
-      }}
-    >
-      {content}
-    </ReactMarkdown>
-  );
-}
-\`\`\`
-
-### Comparison
-
-| Library | Size | Speed | Extensibility | Best For |
-|---------|------|-------|---------------|----------|
-| marked | Small | Fast | Moderate | Simple rendering |
-| markdown-it | Medium | Fast | High | Plugins needed |
-| remark | Large | Moderate | Very High | AST manipulation |
-| react-markdown | Medium | Moderate | High | React apps |
-`,
-			},
-		],
-	},
-
-	cron: {
+	// ==================== CRON ARTICLES ====================
+	{
+		slug: "cron-expression-syntax",
 		toolId: "cron",
-		articles: [
-			{
-				id: "cron-syntax",
-				title: "Cron Expression Syntax Explained",
-				description:
-					"Complete guide to cron syntax, with examples for common scheduling patterns.",
-				tags: ["syntax", "basics", "scheduling"],
-				content: `
+		title: "Cron Expression Syntax: A Complete Reference Guide",
+		description:
+			"Complete guide to cron syntax, with examples for common scheduling patterns.",
+		tags: ["syntax", "basics", "scheduling"],
+		relatedSlugs: ["cron-nodejs-scheduling"],
+		content: `
 ## Cron Expression Syntax
 
 Cron expressions define schedules for recurring tasks.
@@ -3411,28 +1968,6 @@ Cron expressions define schedules for recurring tasks.
 
 # Every 6 hours
 0 */6 * * *
-
-# At 10:00 AM on weekdays
-0 10 * * MON-FRI
-
-# Twice daily at 8 AM and 8 PM
-0 8,20 * * *
-\`\`\`
-
-### Extended Format (6-7 fields)
-
-Some systems add seconds and/or year:
-
-\`\`\`
-┌───────────── second (0-59) [optional]
-│ ┌───────────── minute (0-59)
-│ │ ┌──────────���── hour (0-23)
-│ │ │ ┌───────────── day of month (1-31)
-│ │ │ │ ┌───────────── month (1-12)
-│ │ │ │ │ ┌───────────── day of week (0-6)
-│ │ │ │ │ │ ┌───────────── year [optional]
-│ │ │ │ │ │ │
-* * * * * * *
 \`\`\`
 
 ### Special Strings
@@ -3446,14 +1981,16 @@ Some systems add seconds and/or year:
 @reboot    # Run once at startup
 \`\`\`
 `,
-			},
-			{
-				id: "cron-in-code",
-				title: "Scheduling Tasks with Cron in Node.js",
-				description:
-					"How to use cron expressions in JavaScript applications for task scheduling.",
-				tags: ["javascript", "nodejs", "code"],
-				content: `
+	},
+	{
+		slug: "cron-nodejs-scheduling",
+		toolId: "cron",
+		title: "Scheduling Tasks with Cron in Node.js",
+		description:
+			"How to use cron expressions in JavaScript applications for task scheduling.",
+		tags: ["javascript", "nodejs", "code"],
+		relatedSlugs: ["cron-expression-syntax"],
+		content: `
 ## Cron in Node.js
 
 Schedule recurring tasks in your Node.js applications.
@@ -3507,49 +2044,12 @@ const interval = parser.parseExpression('*/5 * * * *');
 // Get next occurrences
 console.log(interval.next().toString());
 console.log(interval.next().toString());
-console.log(interval.next().toString());
 
 // With options
 const interval2 = parser.parseExpression('0 9 * * *', {
   currentDate: new Date(),
   tz: 'America/New_York'
 });
-
-// Iterate
-const occurrences = [];
-for (let i = 0; i < 5; i++) {
-  occurrences.push(interval.next().toDate());
-}
-\`\`\`
-
-### Agenda
-
-Full-featured job scheduling.
-
-\`\`\`javascript
-npm install agenda
-\`\`\`
-
-\`\`\`javascript
-import { Agenda } from 'agenda';
-
-const agenda = new Agenda({ db: { address: mongoUrl } });
-
-// Define a job
-agenda.define('send email', async (job) => {
-  const { to, subject, body } = job.attrs.data;
-  await sendEmail(to, subject, body);
-});
-
-// Schedule with cron
-await agenda.every('0 9 * * *', 'send email', {
-  to: 'user@example.com',
-  subject: 'Daily Report',
-  body: '...'
-});
-
-// Start processing
-await agenda.start();
 \`\`\`
 
 ### Bull (Redis-based)
@@ -3573,21 +2073,176 @@ myQueue.process(async (job) => {
 });
 \`\`\`
 `,
-			},
-		],
 	},
 
-	// ==================== UTILITY TOOLS ====================
-	timestamp: {
+	// ==================== SQL ARTICLES ====================
+	{
+		slug: "sql-formatting-best-practices",
+		toolId: "sql",
+		title: "SQL Formatting Best Practices for Readable Queries",
+		description:
+			"Write readable, maintainable SQL with consistent formatting conventions.",
+		tags: ["best-practices", "style", "readability"],
+		relatedSlugs: ["sql-injection-prevention"],
+		content: `
+## SQL Formatting Guide
+
+Well-formatted SQL is easier to read, review, and maintain.
+
+### Basic Formatting Rules
+
+\`\`\`sql
+-- ✅ Good: Keywords uppercase, proper indentation
+SELECT
+    u.id,
+    u.name,
+    u.email,
+    COUNT(o.id) AS order_count
+FROM users u
+LEFT JOIN orders o ON o.user_id = u.id
+WHERE u.status = 'active'
+    AND u.created_at > '2024-01-01'
+GROUP BY u.id, u.name, u.email
+HAVING COUNT(o.id) > 5
+ORDER BY order_count DESC
+LIMIT 100;
+
+-- ❌ Bad: Hard to read
+select u.id,u.name,u.email,count(o.id) from users u left join orders o on o.user_id=u.id where u.status='active' group by u.id,u.name,u.email limit 100;
+\`\`\`
+
+### JOIN Formatting
+
+\`\`\`sql
+SELECT
+    o.id,
+    o.total,
+    u.name AS customer_name,
+    p.name AS product_name
+FROM orders o
+INNER JOIN users u
+    ON u.id = o.user_id
+LEFT JOIN order_items oi
+    ON oi.order_id = o.id
+LEFT JOIN products p
+    ON p.id = oi.product_id
+WHERE o.status = 'completed';
+\`\`\`
+
+### CTEs (Common Table Expressions)
+
+\`\`\`sql
+WITH active_users AS (
+    SELECT id, name, email
+    FROM users
+    WHERE status = 'active'
+),
+user_orders AS (
+    SELECT
+        user_id,
+        COUNT(*) AS order_count,
+        SUM(total) AS total_spent
+    FROM orders
+    GROUP BY user_id
+)
+SELECT
+    au.name,
+    au.email,
+    COALESCE(uo.order_count, 0) AS orders,
+    COALESCE(uo.total_spent, 0) AS spent
+FROM active_users au
+LEFT JOIN user_orders uo ON uo.user_id = au.id
+ORDER BY spent DESC;
+\`\`\`
+`,
+	},
+	{
+		slug: "sql-injection-prevention",
+		toolId: "sql",
+		title: "Preventing SQL Injection: A Developer's Security Guide",
+		description:
+			"Understanding SQL injection attacks and how to write secure database queries.",
+		tags: ["security", "injection", "best-practices"],
+		relatedSlugs: ["sql-formatting-best-practices", "url-encoding-security"],
+		content: `
+## SQL Injection Prevention
+
+SQL injection remains one of the most dangerous and common web vulnerabilities.
+
+### What is SQL Injection?
+
+Attackers insert malicious SQL through user input:
+
+\`\`\`javascript
+// Vulnerable code
+const query = \`SELECT * FROM users WHERE id = \${userId}\`;
+
+// Attacker input: "1; DROP TABLE users; --"
+// Resulting query:
+// SELECT * FROM users WHERE id = 1; DROP TABLE users; --
+\`\`\`
+
+### Prevention: Parameterized Queries
+
+**Node.js (pg):**
+\`\`\`javascript
+// ❌ WRONG: String concatenation
+const query = \`SELECT * FROM users WHERE email = '\${email}'\`;
+
+// ✅ CORRECT: Parameterized query
+const query = 'SELECT * FROM users WHERE email = $1';
+const result = await client.query(query, [email]);
+\`\`\`
+
+**Python (psycopg2):**
+\`\`\`python
+# ❌ WRONG
+cursor.execute(f"SELECT * FROM users WHERE email = '{email}'")
+
+# ✅ CORRECT
+cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+\`\`\`
+
+### ORMs and Query Builders
+
+\`\`\`javascript
+// Prisma (safe by default)
+const user = await prisma.user.findUnique({
+  where: { email: userInput }
+});
+
+// Knex.js
+const users = await knex('users')
+  .where('email', userInput)
+  .select('*');
+
+// Be careful with raw queries!
+// ❌ Still vulnerable
+knex.raw(\`SELECT * FROM users WHERE email = '\${email}'\`);
+
+// ✅ Safe raw query
+knex.raw('SELECT * FROM users WHERE email = ?', [email]);
+\`\`\`
+
+### Additional Protections
+
+1. **Least privilege**: DB user should only have needed permissions
+2. **Input validation**: Validate data types and formats
+3. **WAF**: Web Application Firewall as additional layer
+4. **Error handling**: Don't expose SQL errors to users
+`,
+	},
+
+	// ==================== TIMESTAMP ARTICLES ====================
+	{
+		slug: "unix-timestamp-explained",
 		toolId: "timestamp",
-		articles: [
-			{
-				id: "unix-timestamp-explained",
-				title: "Unix Timestamps Explained",
-				description:
-					"What Unix timestamps are, why they exist, and how to work with them.",
-				tags: ["basics", "time", "unix"],
-				content: `
+		title: "Unix Timestamps Explained: Everything Developers Need to Know",
+		description:
+			"What Unix timestamps are, why they exist, and how to work with them.",
+		tags: ["basics", "time", "unix"],
+		relatedSlugs: ["javascript-date-handling"],
+		content: `
 ## What is a Unix Timestamp?
 
 A Unix timestamp (or Epoch time) is the number of seconds since January 1, 1970, 00:00:00 UTC.
@@ -3632,7 +2287,7 @@ Math.floor(Date.now() / 1000) // 1704067200
 - Max value: 2,147,483,647
 - This represents: Tue Jan 19 2038 03:14:07 UTC
 
-After this, the number overflows to negative, breaking date calculations. Modern 64-bit systems don't have this issue.
+After this, the number overflows to negative, breaking date calculations.
 
 ### Advantages of Timestamps
 
@@ -3641,30 +2296,17 @@ After this, the number overflows to negative, breaking date calculations. Modern
 3. **Compact**: Single number vs date string
 4. **Sortable**: Natural chronological order
 5. **Unambiguous**: No date format confusion
-
-### Common Operations
-
-\`\`\`javascript
-const now = Math.floor(Date.now() / 1000);
-
-// Add 1 hour
-const inOneHour = now + 3600;
-
-// Add 1 day
-const tomorrow = now + 86400;
-
-// Difference in days
-const days = Math.floor((timestamp2 - timestamp1) / 86400);
-\`\`\`
 `,
-			},
-			{
-				id: "datetime-javascript",
-				title: "Date and Time in JavaScript",
-				description:
-					"Working with dates, timestamps, and timezones in JavaScript.",
-				tags: ["javascript", "code", "tutorial"],
-				content: `
+	},
+	{
+		slug: "javascript-date-handling",
+		toolId: "timestamp",
+		title: "Date and Time in JavaScript: A Practical Guide",
+		description:
+			"Working with dates, timestamps, and timezones in JavaScript.",
+		tags: ["javascript", "code", "tutorial"],
+		relatedSlugs: ["unix-timestamp-explained"],
+		content: `
 ## JavaScript Date Handling
 
 JavaScript's Date handling has quirks. Here's what you need to know.
@@ -3700,12 +2342,6 @@ date.getDay()         // 0-6 (0 = Sunday)
 date.getHours()       // 0-23
 date.getMinutes()     // 0-59
 date.getSeconds()     // 0-59
-date.getMilliseconds() // 0-999
-
-// UTC versions
-date.getUTCFullYear()
-date.getUTCMonth()
-// etc.
 \`\`\`
 
 ### Formatting
@@ -3717,7 +2353,6 @@ const date = new Date('2024-01-15T14:30:00Z');
 date.toISOString()      // "2024-01-15T14:30:00.000Z"
 date.toLocaleDateString() // "1/15/2024" (locale-dependent)
 date.toLocaleTimeString() // "2:30:00 PM"
-date.toLocaleString()   // "1/15/2024, 2:30:00 PM"
 
 // With options
 date.toLocaleDateString('en-US', {
@@ -3743,37 +2378,20 @@ import dayjs from 'dayjs';
 
 dayjs().format('YYYY-MM-DD');
 dayjs().add(7, 'day');
-dayjs(date1).diff(date2, 'day');
-\`\`\`
-
-### Timezone Handling
-
-\`\`\`javascript
-// Get timezone offset (minutes)
-new Date().getTimezoneOffset() // -300 for EST
-
-// Format with timezone
-new Intl.DateTimeFormat('en-US', {
-  timeZone: 'America/New_York',
-  dateStyle: 'full',
-  timeStyle: 'long'
-}).format(new Date());
 \`\`\`
 `,
-			},
-		],
 	},
 
-	color: {
+	// ==================== COLOR ARTICLES ====================
+	{
+		slug: "color-formats-guide",
 		toolId: "color",
-		articles: [
-			{
-				id: "color-formats",
-				title: "Understanding Color Formats",
-				description:
-					"HEX, RGB, HSL, and more: understanding different color representations.",
-				tags: ["basics", "formats", "design"],
-				content: `
+		title: "Understanding Color Formats: HEX, RGB, HSL & More",
+		description:
+			"HEX, RGB, HSL, and more: understanding different color representations for web development.",
+		tags: ["basics", "formats", "design"],
+		relatedSlugs: ["color-accessibility-wcag"],
+		content: `
 ## Color Formats Explained
 
 Different color formats serve different purposes. Here's what each offers.
@@ -3836,28 +2454,6 @@ hsla(14, 100%, 60%, 0.5)
 360° = Red (wraps around)
 \`\`\`
 
-### Conversion Formulas
-
-\`\`\`javascript
-// HEX to RGB
-function hexToRgb(hex) {
-  const result = /^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
-}
-
-// RGB to HEX
-function rgbToHex(r, g, b) {
-  return '#' + [r, g, b].map(x => {
-    const hex = x.toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
-  }).join('');
-}
-\`\`\`
-
 ### Modern: OKLCH
 
 Perceptually uniform color space (CSS Color Level 4).
@@ -3869,14 +2465,16 @@ oklch(70% 0.15 180)
 
 **Best for**: Accessible color palettes, consistent perceived brightness
 `,
-			},
-			{
-				id: "color-accessibility",
-				title: "Color Accessibility: Contrast and WCAG",
-				description:
-					"Ensuring your color choices are accessible to all users.",
-				tags: ["accessibility", "wcag", "contrast"],
-				content: `
+	},
+	{
+		slug: "color-accessibility-wcag",
+		toolId: "color",
+		title: "Color Accessibility: WCAG Contrast Guidelines",
+		description:
+			"Ensuring your color choices are accessible to all users with WCAG compliance.",
+		tags: ["accessibility", "wcag", "contrast"],
+		relatedSlugs: ["color-formats-guide"],
+		content: `
 ## Color Accessibility
 
 Good color choices ensure everyone can use your interface.
@@ -3911,7 +2509,6 @@ function contrast(rgb1, rgb2) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-// Usage
 contrast([0, 0, 0], [255, 255, 255]); // 21:1 (max)
 contrast([255, 255, 255], [119, 119, 119]); // 4.5:1 (AA pass)
 \`\`\`
@@ -3940,40 +2537,799 @@ contrast([255, 255, 255], [119, 119, 119]); // 4.5:1 (AA pass)
 \`\`\`
 
 2. **Use sufficient contrast**
-\`\`\`css
-/* Bad: Low contrast */
-color: #999;
-background: #fff;  /* 2.85:1 - fails AA */
-
-/* Good: Sufficient contrast */
-color: #595959;
-background: #fff;  /* 7:1 - passes AAA */
-\`\`\`
 
 3. **Test with simulators**
 - Chrome DevTools → Rendering → Emulate vision deficiencies
-- Stark plugin (Figma)
-- Color Oracle (desktop app)
 
-4. **Use patterns with colors**
+4. **Use patterns with colors in charts**
+`,
+	},
+
+	// ==================== YAML ARTICLES ====================
+	{
+		slug: "yaml-vs-json-comparison",
+		toolId: "yaml",
+		title: "YAML vs JSON: When to Use Each Format",
+		description:
+			"A comparison of YAML and JSON formats, their strengths, and appropriate use cases.",
+		tags: ["comparison", "data", "config"],
+		relatedSlugs: ["yaml-common-gotchas", "json-complete-guide"],
+		content: `
+## YAML vs JSON
+
+Both are data serialization formats, but they serve different purposes best.
+
+### Syntax Comparison
+
+**JSON:**
+\`\`\`json
+{
+  "server": {
+    "host": "localhost",
+    "port": 8080,
+    "ssl": true
+  },
+  "databases": ["mysql", "redis"]
+}
 \`\`\`
-Chart data: Use different line styles (solid, dashed)
-             AND colors for each series
+
+**YAML:**
+\`\`\`yaml
+server:
+  host: localhost
+  port: 8080
+  ssl: true
+databases:
+  - mysql
+  - redis
+\`\`\`
+
+### Key Differences
+
+| Feature | JSON | YAML |
+|---------|------|------|
+| Comments | ❌ Not supported | ✅ # comments |
+| Readability | Moderate | High |
+| Verbosity | More punctuation | Minimal |
+| Parsing speed | Faster | Slower |
+| Multi-document | ❌ No | ✅ Yes |
+
+### When to Use JSON
+
+- **APIs**: Standard for REST APIs
+- **Data exchange**: Universal support
+- **JavaScript apps**: Native parsing
+- **Performance critical**: Faster parsing
+
+### When to Use YAML
+
+- **Configuration files**: More readable
+- **Docker Compose**: Standard format
+- **Kubernetes**: All manifests are YAML
+- **CI/CD pipelines**: GitHub Actions, GitLab CI
+
+### YAML Superpowers
+
+\`\`\`yaml
+# Multi-line strings
+description: |
+  This is a multi-line
+  string that preserves
+  line breaks.
+
+# Anchors and aliases (DRY)
+defaults: &defaults
+  timeout: 30
+  retries: 3
+
+production:
+  <<: *defaults
+  host: prod.example.com
 \`\`\`
 `,
-			},
-		],
 	},
+	{
+		slug: "yaml-common-gotchas",
+		toolId: "yaml",
+		title: "YAML Gotchas: Common Pitfalls Every Developer Should Know",
+		description:
+			"Common YAML pitfalls that cause bugs and how to avoid them.",
+		tags: ["best-practices", "pitfalls", "debugging"],
+		relatedSlugs: ["yaml-vs-json-comparison"],
+		content: `
+## YAML Gotchas
+
+YAML's flexibility can lead to unexpected behavior. Here are the most common pitfalls.
+
+### 1. The Norway Problem
+
+\`\`\`yaml
+# These are parsed as booleans!
+country: NO      # false
+answer: YES      # true
+maybe: on        # true
+disabled: off    # false
+
+# Fix: Quote strings
+country: "NO"
+answer: "YES"
+\`\`\`
+
+### 2. Unquoted Strings
+
+\`\`\`yaml
+# Surprise! These aren't strings:
+version: 1.0     # Float: 1.0
+port: 8080       # Integer: 8080
+time: 12:30      # Sexagesimal: 750 (12*60+30)!
+date: 2024-01-15 # Date object
+
+# Fix: Quote when you want strings
+version: "1.0"
+time: "12:30"
+\`\`\`
+
+### 3. Indentation Sensitivity
+
+\`\`\`yaml
+# This is an object
+parent:
+  child: value
+
+# This is a string "child: value"
+parent: 
+child: value
+
+# Tabs vs spaces (use spaces!)
+parent:
+	child: broken  # Tab = error in many parsers
+\`\`\`
+
+### 4. Special Characters
+
+\`\`\`yaml
+# Colon in value needs quoting
+url: "https://example.com"
+
+# Hash in value needs quoting
+color: "#FF5733"
+
+# Otherwise it's a comment
+color: #FF5733  # Everything after # is gone!
+\`\`\`
+
+### Safe YAML Parsing
+
+\`\`\`javascript
+import yaml from 'js-yaml';
+
+// Use safeLoad to prevent code execution
+const data = yaml.load(yamlString, { schema: yaml.JSON_SCHEMA });
+\`\`\`
+`,
+	},
+
+	// ==================== DIFF ARTICLES ====================
+	{
+		slug: "diff-algorithms-explained",
+		toolId: "diff",
+		title: "How Diff Algorithms Work: Myers, Patience & More",
+		description:
+			"Understanding the algorithms behind text comparison tools like Git diff.",
+		tags: ["algorithms", "technical", "git"],
+		relatedSlugs: ["diff-javascript-libraries"],
+		content: `
+## Diff Algorithms
+
+Diff tools find the differences between two texts. Here's how they work.
+
+### The Problem
+
+Given two sequences, find the minimum edit operations (insert, delete) to transform one into the other.
+
+### Longest Common Subsequence (LCS)
+
+Most diff algorithms are based on finding the LCS.
+
+\`\`\`
+A: "ABCDEF"
+B: "ABXDEF"
+LCS: "ABDEF" (length 5)
+
+Difference = chars not in LCS
+A has: C (deleted)
+B has: X (inserted)
+\`\`\`
+
+### Myers' Algorithm
+
+The standard algorithm (used by Git). Finds the shortest edit script.
+
+\`\`\`
+Time: O((N+M)×D) where D = edit distance
+Space: O((N+M)×D) or O(N+M) with optimization
+
+For similar files (small D): Nearly linear
+For very different files: Up to O(N×M)
+\`\`\`
+
+### Patience Diff
+
+Alternative algorithm that produces more readable diffs.
+
+\`\`\`
+1. Find unique lines that appear once in both files
+2. Use these as "anchors"
+3. Recursively diff between anchors
+
+Better for:
+- Code refactoring
+- Moved blocks of code
+- Structural changes
+\`\`\`
+
+### Git Diff Options
+
+\`\`\`bash
+# Default (Myers)
+git diff
+
+# Patience algorithm
+git diff --patience
+
+# Histogram (faster patience)
+git diff --histogram
+\`\`\`
+`,
+	},
+	{
+		slug: "diff-javascript-libraries",
+		toolId: "diff",
+		title: "Implementing Diff in JavaScript: Libraries & Examples",
+		description:
+			"Libraries and techniques for comparing text in JavaScript applications.",
+		tags: ["javascript", "code", "libraries"],
+		relatedSlugs: ["diff-algorithms-explained"],
+		content: `
+## Diff in JavaScript
+
+Several libraries make text comparison easy in JavaScript.
+
+### diff (npm)
+
+The most popular diff library.
+
+\`\`\`javascript
+npm install diff
+\`\`\`
+
+\`\`\`javascript
+import * as Diff from 'diff';
+
+// Character-level diff
+const diff = Diff.diffChars('hello', 'hallo');
+diff.forEach(part => {
+  const color = part.added ? 'green' : part.removed ? 'red' : 'grey';
+  console.log(part.value, color);
+});
+
+// Word-level diff
+const wordDiff = Diff.diffWords('hello world', 'hello there');
+
+// Line-level diff
+const lineDiff = Diff.diffLines(oldText, newText);
+
+// Create patch
+const patch = Diff.createPatch('file.txt', oldText, newText);
+
+// Apply patch
+const result = Diff.applyPatch(oldText, patch);
+\`\`\`
+
+### diff2html
+
+Render diffs as HTML.
+
+\`\`\`javascript
+import { html } from 'diff2html';
+
+const diffString = \`
+--- a/file.txt
++++ b/file.txt
+@@ -1,3 +1,3 @@
+ line 1
+-old line
++new line
+ line 3
+\`;
+
+const htmlOutput = html(diffString, {
+  drawFileList: true,
+  outputFormat: 'side-by-side'
+});
+\`\`\`
+`,
+	},
+
+	// ==================== MARKDOWN ARTICLES ====================
+	{
+		slug: "markdown-syntax-reference",
+		toolId: "markdown",
+		title: "Complete Markdown Syntax Reference Guide",
+		description:
+			"Every Markdown syntax element you need to know, from basic to extended.",
+		tags: ["syntax", "reference", "basics"],
+		relatedSlugs: ["markdown-javascript-libraries"],
+		content: `
+## Markdown Syntax Reference
+
+Markdown is a lightweight markup language for creating formatted text.
+
+### Headings
+
+\`\`\`markdown
+# Heading 1
+## Heading 2
+### Heading 3
+\`\`\`
+
+### Text Formatting
+
+\`\`\`markdown
+**bold** or __bold__
+*italic* or _italic_
+***bold and italic***
+~~strikethrough~~
+\`inline code\`
+\`\`\`
+
+### Links and Images
+
+\`\`\`markdown
+[Link text](https://example.com)
+![Alt text](image.jpg)
+\`\`\`
+
+### Lists
+
+\`\`\`markdown
+- Item 1
+- Item 2
+  - Nested item
+
+1. First
+2. Second
+
+- [x] Completed task
+- [ ] Incomplete task
+\`\`\`
+
+### Code Blocks
+
+\`\`\`\`markdown
+\`\`\`javascript
+const greeting = "Hello, World!";
+\`\`\`
+\`\`\`\`
+
+### Tables
+
+\`\`\`markdown
+| Header 1 | Header 2 |
+|----------|----------|
+| Cell 1   | Cell 2   |
+\`\`\`
+
+### Blockquotes
+
+\`\`\`markdown
+> This is a quote.
+> > Nested quotes work too.
+\`\`\`
+`,
+	},
+	{
+		slug: "markdown-javascript-libraries",
+		toolId: "markdown",
+		title: "Best Markdown Libraries for JavaScript in 2024",
+		description:
+			"Parsing, rendering, and extending Markdown in JavaScript applications.",
+		tags: ["javascript", "libraries", "tools"],
+		relatedSlugs: ["markdown-syntax-reference"],
+		content: `
+## Markdown Libraries
+
+Choose the right library for your Markdown needs.
+
+### marked
+
+Fast and lightweight. Good for basic needs.
+
+\`\`\`javascript
+import { marked } from 'marked';
+
+const html = marked.parse('# Hello World');
+
+marked.setOptions({
+  gfm: true,
+  breaks: true,
+});
+\`\`\`
+
+### markdown-it
+
+Extensible and CommonMark compliant.
+
+\`\`\`javascript
+import MarkdownIt from 'markdown-it';
+
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+});
+
+const html = md.render('# Hello *World*');
+
+// Add plugins
+import emoji from 'markdown-it-emoji';
+md.use(emoji);
+\`\`\`
+
+### react-markdown
+
+Render Markdown as React components.
+
+\`\`\`jsx
+import ReactMarkdown from 'react-markdown';
+
+function Article({ content }) {
+  return <ReactMarkdown>{content}</ReactMarkdown>;
+}
+\`\`\`
+
+### Comparison
+
+| Library | Size | Speed | Extensibility |
+|---------|------|-------|---------------|
+| marked | Small | Fast | Moderate |
+| markdown-it | Medium | Fast | High |
+| react-markdown | Medium | Moderate | High |
+`,
+	},
+
+	// ==================== NUMBER BASE ARTICLES ====================
+	{
+		slug: "number-systems-explained",
+		toolId: "base",
+		title: "Number Systems Explained: Binary, Hex, Octal & Decimal",
+		description:
+			"Understanding binary, octal, decimal, and hexadecimal number systems and their uses in computing.",
+		tags: ["basics", "math", "computing"],
+		relatedSlugs: ["javascript-number-base-conversion"],
+		content: `
+## Number Systems in Computing
+
+Computers fundamentally work with binary, but we use different number bases for different purposes.
+
+### Why Different Bases?
+
+| Base | Name | Digits | Use Case |
+|------|------|--------|----------|
+| 2 | Binary | 0-1 | How computers actually work |
+| 8 | Octal | 0-7 | Unix file permissions |
+| 10 | Decimal | 0-9 | Human-readable numbers |
+| 16 | Hexadecimal | 0-F | Memory addresses, colors |
+
+### Binary (Base 2)
+
+The foundation of all computing. Each digit is a "bit".
+
+\`\`\`
+Decimal 13 in binary:
+13 = 8 + 4 + 0 + 1
+   = 1×2³ + 1×2² + 0×2¹ + 1×2⁰
+   = 1101₂
+\`\`\`
+
+### Hexadecimal (Base 16)
+
+Each hex digit = 4 binary bits.
+
+\`\`\`
+Binary:      1101 0101
+Hexadecimal:    D    5
+
+Common uses:
+- Colors: #FF5733
+- Memory: 0x7FFE0000
+- MAC addresses: AA:BB:CC:DD:EE:FF
+\`\`\`
+
+### Octal (Base 8)
+
+Each octal digit = 3 binary bits. Used in Unix permissions.
+
+\`\`\`
+chmod 755 file
+  7 = rwx (owner)
+  5 = r-x (group)
+  5 = r-x (others)
+\`\`\`
+`,
+	},
+	{
+		slug: "javascript-number-base-conversion",
+		toolId: "base",
+		title: "Number Base Conversion in JavaScript",
+		description:
+			"How to convert between number bases using JavaScript's built-in methods.",
+		tags: ["javascript", "tutorial", "code"],
+		relatedSlugs: ["number-systems-explained"],
+		content: `
+## Number Conversion in JavaScript
+
+JavaScript provides built-in methods for common base conversions.
+
+### parseInt() - String to Number
+
+\`\`\`javascript
+// Parse with specific base (radix)
+parseInt('1010', 2);    // 10 (binary to decimal)
+parseInt('FF', 16);     // 255 (hex to decimal)
+parseInt('777', 8);     // 511 (octal to decimal)
+\`\`\`
+
+### toString() - Number to String
+
+\`\`\`javascript
+const num = 255;
+
+num.toString(2);   // "11111111" (binary)
+num.toString(8);   // "377" (octal)
+num.toString(16);  // "ff" (hex)
+\`\`\`
+
+### Combining for Conversion
+
+\`\`\`javascript
+// Binary to Hex
+function binaryToHex(binary) {
+  return parseInt(binary, 2).toString(16);
+}
+binaryToHex('11111111'); // "ff"
+
+// Any base to any base
+function convertBase(value, fromBase, toBase) {
+  return parseInt(value, fromBase).toString(toBase);
+}
+convertBase('ff', 16, 2);  // "11111111"
+\`\`\`
+
+### Handling Large Numbers
+
+For numbers larger than 2^53, use BigInt:
+
+\`\`\`javascript
+const big = BigInt('0xFFFFFFFFFFFFFFFF');
+big.toString(2);
+// "1111111111111111111111111111111111111111111111111111111111111111"
+\`\`\`
+`,
+	},
+
+	// ==================== LOREM IPSUM ARTICLES ====================
+	{
+		slug: "history-of-lorem-ipsum",
+		toolId: "lorem",
+		title: "The History of Lorem Ipsum: From Cicero to Modern Design",
+		description:
+			"The surprising 500-year history of the world's most famous placeholder text.",
+		tags: ["history", "design", "typography"],
+		relatedSlugs: ["lorem-ipsum-alternatives"],
+		content: `
+## The History of Lorem Ipsum
+
+Lorem Ipsum has been the industry's standard dummy text since the 1500s.
+
+### Ancient Origins
+
+Lorem Ipsum is derived from "De finibus bonorum et malorum" (On the Ends of Good and Evil) by Cicero, written in 45 BC.
+
+### The Original Text
+
+\`\`\`
+"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet..."
+
+Translation: "There is no one who loves pain itself, who seeks 
+after it and wants to have it, simply because it is pain..."
+\`\`\`
+
+### Key Milestones
+
+| Year | Event |
+|------|-------|
+| 1500s | Unknown printer scrambles Cicero's text |
+| 1960s | Letraset sheets popularize Lorem Ipsum |
+| 1985 | Aldus PageMaker includes Lorem Ipsum |
+| Today | Built into most design tools |
+
+### The Standard Passage
+
+\`\`\`
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+eiusmod tempor incididunt ut labore et dolore magna aliqua.
+\`\`\`
+`,
+	},
+	{
+		slug: "lorem-ipsum-alternatives",
+		toolId: "lorem",
+		title: "Lorem Ipsum Alternatives for Developers & Designers",
+		description:
+			"Fun and useful alternatives to Lorem Ipsum for placeholder text.",
+		tags: ["tools", "alternatives", "fun"],
+		relatedSlugs: ["history-of-lorem-ipsum"],
+		content: `
+## Lorem Ipsum Alternatives
+
+Sometimes you want placeholder text that's more interesting.
+
+### Fun Alternatives
+
+**Bacon Ipsum** - Meaty placeholder text
+\`\`\`
+Bacon ipsum dolor amet hamburger pork chop leberkas ham hock...
+\`\`\`
+
+**Cupcake Ipsum** - Sweet placeholder
+\`\`\`
+Cupcake ipsum dolor sit amet tootsie roll dragée tiramisu...
+\`\`\`
+
+**Hipster Ipsum** - Artisanal filler
+\`\`\`
+Craft beer pork belly aesthetic, 8-bit meditation sustainable...
+\`\`\`
+
+### Generator Libraries
+
+\`\`\`javascript
+// faker.js - Realistic fake data
+import { faker } from '@faker-js/faker';
+
+faker.lorem.paragraph();
+faker.lorem.sentences(3);
+faker.person.fullName();
+faker.internet.email();
+
+// For specific domains
+faker.commerce.productDescription();
+faker.company.catchPhrase();
+\`\`\`
+`,
+	},
+
+	// ==================== ENV ARTICLES ====================
+	{
+		slug: "env-files-complete-guide",
+		toolId: "env",
+		title: "Complete Guide to .env Files for Configuration",
+		description:
+			"How to use .env files for configuration, best practices, and common patterns.",
+		tags: ["basics", "config", "security"],
+		relatedSlugs: ["env-security-best-practices"],
+		content: `
+## Understanding .env Files
+
+Environment files (.env) store configuration as key-value pairs.
+
+### Basic Syntax
+
+\`\`\`bash
+# Database configuration
+DATABASE_URL=postgresql://localhost:5432/mydb
+DATABASE_POOL_SIZE=10
+
+# API Keys
+API_KEY=sk_live_abc123
+\`\`\`
+
+### Loading .env Files
+
+**Node.js:**
+\`\`\`javascript
+require('dotenv').config();
+const dbUrl = process.env.DATABASE_URL;
+\`\`\`
+
+### Multiple Environments
+
+\`\`\`
+.env                 # Default/shared values
+.env.local           # Local overrides (gitignored)
+.env.development     # Development settings
+.env.production      # Production settings
+\`\`\`
+`,
+	},
+	{
+		slug: "env-security-best-practices",
+		toolId: "env",
+		title: ".env Security Best Practices for Developers",
+		description:
+			"How to handle environment variables securely and avoid common mistakes.",
+		tags: ["security", "best-practices", "devops"],
+		relatedSlugs: ["env-files-complete-guide"],
+		content: `
+## .env Security
+
+Environment variables need proper handling to stay secure.
+
+### The Golden Rules
+
+1. **Never commit .env files**
+\`\`\`gitignore
+# .gitignore
+.env
+.env.local
+\`\`\`
+
+2. **Provide a template**
+\`\`\`bash
+# .env.example (safe to commit)
+DATABASE_URL=postgresql://localhost:5432/mydb
+API_KEY=your_api_key_here
+\`\`\`
+
+### Common Mistakes
+
+\`\`\`javascript
+// ❌ WRONG: Exposing to client-side
+const config = {
+  apiKey: process.env.API_KEY  // Bundled in JS!
 };
 
-// Helper function to get content for a specific tool
-export function getToolContent(toolId: string): ToolContent | undefined {
-	return toolContent[toolId];
+// ❌ WRONG: Logging secrets
+console.log('Config:', process.env);
+\`\`\`
+
+### Production Best Practices
+
+1. **Use a secrets manager** (AWS Secrets Manager, Vault)
+2. **Rotate secrets regularly**
+3. **Principle of least privilege**
+4. **Encrypt at rest**
+`,
+	},
+];
+
+// Helper function to get articles for a specific tool
+export function getArticlesForTool(toolId: string): Article[] {
+	return articles.filter((article) => article.toolId === toolId);
 }
 
-// Helper function to get all articles across all tools (for search/indexing)
-export function getAllArticles(): Array<Article & { toolId: string }> {
-	return Object.entries(toolContent).flatMap(([toolId, content]) =>
-		content.articles.map((article) => ({ ...article, toolId }))
-	);
+// Helper function to get a single article by slug
+export function getArticleBySlug(slug: string): Article | undefined {
+	return articles.find((article) => article.slug === slug);
+}
+
+// Helper function to get related articles
+export function getRelatedArticles(slug: string): Article[] {
+	const article = getArticleBySlug(slug);
+	if (!article?.relatedSlugs) return [];
+	return article.relatedSlugs
+		.map((s) => getArticleBySlug(s))
+		.filter((a): a is Article => a !== undefined);
+}
+
+// Helper function to get all articles (for sitemap)
+export function getAllArticles(): Article[] {
+	return articles;
+}
+
+// Legacy compatibility - get content for a tool (used by tool-layout)
+export function getToolContent(toolId: string): { toolId: string; articles: Article[] } | undefined {
+	const toolArticles = getArticlesForTool(toolId);
+	if (toolArticles.length === 0) return undefined;
+	return { toolId, articles: toolArticles };
 }
