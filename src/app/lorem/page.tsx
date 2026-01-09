@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
@@ -140,40 +139,25 @@ export default function LoremPage() {
 				</Card>
 
 				{/* Output */}
-				<AnimatePresence mode="wait">
-					{output ? (
-						<motion.div
-							key="output"
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -20 }}
-						>
-							<Card hover={false}>
-								<div className="flex items-center justify-between mb-4">
-									<span className="text-sm font-medium text-foreground-muted">
-										Generated Text
-									</span>
-									<CopyButton text={output} />
-								</div>
-								<div className="prose prose-sm max-w-none">
-									<div className="whitespace-pre-wrap text-foreground leading-relaxed">
-										{output}
-									</div>
-								</div>
-							</Card>
-						</motion.div>
-					) : (
-						<motion.div
-							key="empty"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							className="text-center py-16 text-foreground-muted"
-						>
-							Click Generate to create placeholder text
-						</motion.div>
-					)}
-				</AnimatePresence>
+				{output ? (
+					<Card hover={false}>
+						<div className="flex items-center justify-between mb-4">
+							<span className="text-sm font-medium text-foreground-muted">
+								Generated Text
+							</span>
+							<CopyButton text={output} />
+						</div>
+						<div className="prose prose-sm max-w-none">
+							<div className="whitespace-pre-wrap text-foreground leading-relaxed">
+								{output}
+							</div>
+						</div>
+					</Card>
+				) : (
+					<div className="text-center py-16 text-foreground-muted">
+						Click Generate to create placeholder text
+					</div>
+				)}
 			</div>
 		</ToolLayout>
 	);

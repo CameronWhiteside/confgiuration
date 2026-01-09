@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import QRCode from "qrcode";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Textarea } from "@/components/ui/textarea";
@@ -106,54 +105,38 @@ export default function QrPage() {
 					<label className="block text-sm font-medium text-foreground-muted mb-2">
 						Preview
 					</label>
-					<AnimatePresence mode="wait">
-						{qrDataUrl ? (
-							<motion.div
-								key="qr"
-								initial={{ opacity: 0, scale: 0.9 }}
-								animate={{ opacity: 1, scale: 1 }}
-								exit={{ opacity: 0, scale: 0.9 }}
-							>
-								<Card hover={false} className="flex flex-col items-center p-8">
-									<div className="bg-white p-4 rounded-xl shadow-md">
-										{/* eslint-disable-next-line @next/next/no-img-element */}
-										<img
-											src={qrDataUrl}
-											alt="QR Code"
-											className="max-w-full h-auto"
-											style={{ imageRendering: "pixelated" }}
-										/>
-									</div>
+					{qrDataUrl ? (
+						<Card hover={false} className="flex flex-col items-center p-8">
+							<div className="bg-white p-4 rounded-xl shadow-md">
+								{/* eslint-disable-next-line @next/next/no-img-element */}
+								<img
+									src={qrDataUrl}
+									alt="QR Code"
+									className="max-w-full h-auto"
+									style={{ imageRendering: "pixelated" }}
+								/>
+							</div>
 
-									<Button
-										variant="secondary"
-										onClick={downloadQr}
-										className="mt-6 flex items-center gap-2"
-									>
-										<Download className="w-4 h-4" />
-										Download PNG
-									</Button>
-								</Card>
-							</motion.div>
-						) : (
-							<motion.div
-								key="empty"
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								exit={{ opacity: 0 }}
+							<Button
+								variant="secondary"
+								onClick={downloadQr}
+								className="mt-6 flex items-center gap-2"
 							>
-								<Card
-									hover={false}
-									className="flex flex-col items-center justify-center p-16 border-dashed bg-background-secondary/30"
-								>
-									<QrCode className="w-16 h-16 text-foreground-muted/30 mb-4" />
-									<p className="text-foreground-muted text-center">
-										Enter text or URL to generate<br />a QR code
-									</p>
-								</Card>
-							</motion.div>
-						)}
-					</AnimatePresence>
+								<Download className="w-4 h-4" />
+								Download PNG
+							</Button>
+						</Card>
+					) : (
+						<Card
+							hover={false}
+							className="flex flex-col items-center justify-center p-16 border-dashed bg-background-secondary/30"
+						>
+							<QrCode className="w-16 h-16 text-foreground-muted/30 mb-4" />
+							<p className="text-foreground-muted text-center">
+								Enter text or URL to generate<br />a QR code
+							</p>
+						</Card>
+					)}
 				</div>
 			</div>
 

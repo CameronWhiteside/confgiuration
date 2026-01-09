@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -138,11 +137,8 @@ export default function ColorPage() {
 		<ToolLayout toolId="color">
 			<div className="space-y-6">
 				{/* Color Preview */}
-				<motion.div
-					key={hex}
-					initial={{ scale: 0.98 }}
-					animate={{ scale: 1 }}
-					className="relative h-40 rounded-xl border border-border overflow-hidden"
+				<div
+					className="relative h-40 rounded-xl border border-border overflow-hidden transition-colors"
 					style={{ backgroundColor: hex }}
 				>
 					<div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
@@ -156,7 +152,7 @@ export default function ColorPage() {
 							className="w-10 h-10 rounded-lg cursor-pointer border-2 border-white shadow-lg"
 						/>
 					</div>
-				</motion.div>
+				</div>
 
 				{/* Color Values Grid */}
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

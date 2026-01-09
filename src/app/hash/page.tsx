@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -61,42 +60,28 @@ export default function HashPage() {
 					{loading ? "Generating..." : "Generate Hashes"}
 				</Button>
 
-				<AnimatePresence>
-					{hasResults && (
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: 20 }}
-							className="space-y-4"
-						>
-							{(Object.entries(hashes) as [Algorithm, string][]).map(
-								([alg, value], index) => (
-									<motion.div
-										key={alg}
-										initial={{ opacity: 0, x: -20 }}
-										animate={{ opacity: 1, x: 0 }}
-										transition={{ delay: index * 0.05 }}
-									>
-										<Card hover={false}>
-											<div className="flex items-center justify-between mb-2">
-												<div className="flex items-center gap-2">
-													<Shield className="w-4 h-4 text-primary" />
-													<span className="font-mono text-sm font-medium text-foreground">
-														{alg}
-													</span>
-												</div>
-												{value && <CopyIconButton text={value} />}
-											</div>
-											<div className="bg-background-secondary rounded-lg p-3 font-mono text-xs break-all text-foreground-muted">
-												{value || "—"}
-											</div>
-										</Card>
-									</motion.div>
-								)
-							)}
-						</motion.div>
-					)}
-				</AnimatePresence>
+				{hasResults && (
+					<div className="space-y-4">
+						{(Object.entries(hashes) as [Algorithm, string][]).map(
+							([alg, value]) => (
+								<Card key={alg} hover={false}>
+									<div className="flex items-center justify-between mb-2">
+										<div className="flex items-center gap-2">
+											<Shield className="w-4 h-4 text-primary" />
+											<span className="font-mono text-sm font-medium text-foreground">
+												{alg}
+											</span>
+										</div>
+										{value && <CopyIconButton text={value} />}
+									</div>
+									<div className="bg-background-secondary rounded-lg p-3 font-mono text-xs break-all text-foreground-muted">
+										{value || "—"}
+									</div>
+								</Card>
+							)
+						)}
+					</div>
+				)}
 
 				{!hasResults && (
 					<Card hover={false} className="bg-background-secondary/50 border-dashed">

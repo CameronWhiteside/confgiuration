@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -87,22 +86,14 @@ export default function TimestampPage() {
 				</Card>
 
 				{/* Error Display */}
-				<AnimatePresence>
-					{error && (
-						<motion.div
-							initial={{ opacity: 0, y: -10 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -10 }}
-						>
-							<Card hover={false} className="bg-error-bg border-error/20 p-4">
-								<div className="flex items-center gap-3 text-error">
-									<AlertCircle className="w-5 h-5 flex-shrink-0" />
-									<code className="text-sm">{error}</code>
-								</div>
-							</Card>
-						</motion.div>
-					)}
-				</AnimatePresence>
+				{error && (
+					<Card hover={false} className="bg-error-bg border-error/20 p-4">
+						<div className="flex items-center gap-3 text-error">
+							<AlertCircle className="w-5 h-5 flex-shrink-0" />
+							<code className="text-sm">{error}</code>
+						</div>
+					</Card>
+				)}
 
 				{/* Converters Grid */}
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -127,24 +118,17 @@ export default function TimestampPage() {
 							<Button onClick={convertFromUnix} disabled={!unixInput} className="w-full">
 								Convert
 							</Button>
-							<AnimatePresence>
-								{convertedFromUnix && (
-									<motion.div
-										initial={{ opacity: 0, height: 0 }}
-										animate={{ opacity: 1, height: "auto" }}
-										exit={{ opacity: 0, height: 0 }}
-										className="space-y-2"
-									>
-										<div className="bg-background-secondary rounded-lg p-3 font-mono text-sm flex items-center justify-between">
-											<span>{convertedFromUnix}</span>
-											<CopyIconButton text={convertedFromUnix} />
-										</div>
-										<div className="text-sm text-foreground-muted">
-											{new Date(convertedFromUnix).toLocaleString()}
-										</div>
-									</motion.div>
-								)}
-							</AnimatePresence>
+							{convertedFromUnix && (
+								<div className="space-y-2">
+									<div className="bg-background-secondary rounded-lg p-3 font-mono text-sm flex items-center justify-between">
+										<span>{convertedFromUnix}</span>
+										<CopyIconButton text={convertedFromUnix} />
+									</div>
+									<div className="text-sm text-foreground-muted">
+										{new Date(convertedFromUnix).toLocaleString()}
+									</div>
+								</div>
+							)}
 						</div>
 					</Card>
 
@@ -162,20 +146,12 @@ export default function TimestampPage() {
 							<Button onClick={convertFromDate} disabled={!dateInput} className="w-full">
 								Convert
 							</Button>
-							<AnimatePresence>
-								{convertedFromDate !== null && (
-									<motion.div
-										initial={{ opacity: 0, height: 0 }}
-										animate={{ opacity: 1, height: "auto" }}
-										exit={{ opacity: 0, height: 0 }}
-									>
-										<div className="bg-background-secondary rounded-lg p-3 font-mono text-sm flex items-center justify-between">
-											<span>{convertedFromDate}</span>
-											<CopyIconButton text={String(convertedFromDate)} />
-										</div>
-									</motion.div>
-								)}
-							</AnimatePresence>
+							{convertedFromDate !== null && (
+								<div className="bg-background-secondary rounded-lg p-3 font-mono text-sm flex items-center justify-between">
+									<span>{convertedFromDate}</span>
+									<CopyIconButton text={String(convertedFromDate)} />
+								</div>
+							)}
 						</div>
 					</Card>
 				</div>

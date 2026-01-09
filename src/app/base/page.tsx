@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -91,73 +90,52 @@ export default function BasePage() {
 				</Card>
 
 				{/* Error */}
-				<AnimatePresence>
-					{!isValid && (
-						<motion.div
-							initial={{ opacity: 0, y: -10 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -10 }}
-						>
-							<Card hover={false} className="bg-error-bg border-error/20 p-4">
-								<div className="flex items-center gap-3 text-error">
-									<AlertCircle className="w-5 h-5" />
-									<span>
-										Invalid {BASE_INFO[fromBase].label.toLowerCase()} number
-									</span>
-								</div>
-							</Card>
-						</motion.div>
-					)}
-				</AnimatePresence>
+				{!isValid && (
+					<Card hover={false} className="bg-error-bg border-error/20 p-4">
+						<div className="flex items-center gap-3 text-error">
+							<AlertCircle className="w-5 h-5" />
+							<span>
+								Invalid {BASE_INFO[fromBase].label.toLowerCase()} number
+							</span>
+						</div>
+					</Card>
+				)}
 
 				{/* Results */}
-				<AnimatePresence>
-					{result && (
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: 20 }}
-							className="grid grid-cols-1 md:grid-cols-2 gap-4"
-						>
-							{bases.map((base) => {
-								const info = BASE_INFO[base];
-								const value = result[base];
+				{result && (
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						{bases.map((base) => {
+							const info = BASE_INFO[base];
+							const value = result[base];
 
-								return (
-									<motion.div
-										key={base}
-										initial={{ opacity: 0, x: -10 }}
-										animate={{ opacity: 1, x: 0 }}
-										transition={{ delay: bases.indexOf(base) * 0.05 }}
-									>
-										<Card
-											hover={false}
-											className={fromBase === base ? "ring-2 ring-primary/50" : ""}
-										>
-											<div className="flex items-center justify-between mb-2">
-												<span className="text-sm font-medium text-foreground-muted">
-													{info.label}
-												</span>
-												<CopyIconButton text={value} />
-											</div>
-											<div className="bg-background-secondary rounded-lg p-3 font-mono text-lg break-all">
-												{info.prefix && (
-													<span className="text-foreground-muted">{info.prefix}</span>
-												)}
-												<span className="text-foreground">{value}</span>
-											</div>
-											{fromBase === base && (
-												<span className="text-xs text-primary mt-2 block">
-													Input base
-												</span>
-											)}
-										</Card>
-									</motion.div>
-								);
-							})}
-						</motion.div>
-					)}
-				</AnimatePresence>
+							return (
+								<Card
+									key={base}
+									hover={false}
+									className={fromBase === base ? "ring-2 ring-primary/50" : ""}
+								>
+									<div className="flex items-center justify-between mb-2">
+										<span className="text-sm font-medium text-foreground-muted">
+											{info.label}
+										</span>
+										<CopyIconButton text={value} />
+									</div>
+									<div className="bg-background-secondary rounded-lg p-3 font-mono text-lg break-all">
+										{info.prefix && (
+											<span className="text-foreground-muted">{info.prefix}</span>
+										)}
+										<span className="text-foreground">{value}</span>
+									</div>
+									{fromBase === base && (
+										<span className="text-xs text-primary mt-2 block">
+											Input base
+										</span>
+									)}
+								</Card>
+							);
+						})}
+					</div>
+				)}
 
 				{/* Empty State */}
 				{!input.trim() && (

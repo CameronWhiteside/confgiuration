@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
@@ -108,11 +107,7 @@ export default function MarkdownPage() {
 				</div>
 
 				{/* Preview */}
-				<motion.div
-					initial={{ opacity: 0, x: 20 }}
-					animate={{ opacity: 1, x: 0 }}
-					transition={{ delay: 0.1 }}
-				>
+				<div>
 					<div className="flex items-center justify-between mb-2">
 						<label className="block text-sm font-medium text-foreground-muted">
 							Preview
@@ -125,7 +120,7 @@ export default function MarkdownPage() {
 							dangerouslySetInnerHTML={{ __html: html }}
 						/>
 					</Card>
-				</motion.div>
+				</div>
 			</div>
 		</ToolLayout>
 	);

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,41 +105,18 @@ export default function UuidPage() {
 }
 
 function UuidList({ uuids }: { uuids: string[] }) {
-	return (
-		<AnimatePresence mode="wait">
-			{uuids.length > 0 ? (
-				<motion.div
-					key="list"
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					exit={{ opacity: 0, y: -20 }}
-					className="space-y-2"
-				>
-					{uuids.map((uuid, i) => (
-						<motion.div
-							key={i}
-							initial={{ opacity: 0, x: -20 }}
-							animate={{ opacity: 1, x: 0 }}
-							transition={{ delay: i * 0.03 }}
-						>
-							<Card hover={false} className="p-3 flex items-center justify-between group">
-								<code className="font-mono text-sm text-foreground">{uuid}</code>
-								<CopyIconButton text={uuid} />
-							</Card>
-						</motion.div>
-					))}
-				</motion.div>
-			) : (
-				<motion.div
-					key="empty"
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					exit={{ opacity: 0 }}
-					className="text-center py-16 text-foreground-muted"
-				>
-					Click Generate to create UUIDs
-				</motion.div>
-			)}
-		</AnimatePresence>
+	return uuids.length > 0 ? (
+		<div className="space-y-2">
+			{uuids.map((uuid, i) => (
+				<Card key={i} hover={false} className="p-3 flex items-center justify-between group">
+					<code className="font-mono text-sm text-foreground">{uuid}</code>
+					<CopyIconButton text={uuid} />
+				</Card>
+			))}
+		</div>
+	) : (
+		<div className="text-center py-16 text-foreground-muted">
+			Click Generate to create UUIDs
+		</div>
 	);
 }

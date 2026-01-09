@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -75,31 +74,17 @@ export default function JwtPage() {
 					Decode
 				</Button>
 
-				<AnimatePresence>
-					{error && (
-						<motion.div
-							initial={{ opacity: 0, y: -10 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -10 }}
-						>
-							<Card hover={false} className="bg-error-bg border-error/20 p-4">
-								<div className="flex items-center gap-3 text-error">
-									<AlertCircle className="w-5 h-5 flex-shrink-0" />
-									<code className="text-sm">{error}</code>
-								</div>
-							</Card>
-						</motion.div>
-					)}
-				</AnimatePresence>
+				{error && (
+					<Card hover={false} className="bg-error-bg border-error/20 p-4">
+						<div className="flex items-center gap-3 text-error">
+							<AlertCircle className="w-5 h-5 flex-shrink-0" />
+							<code className="text-sm">{error}</code>
+						</div>
+					</Card>
+				)}
 
-				<AnimatePresence>
-					{decoded && (
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: 20 }}
-							className="space-y-6"
-						>
+				{decoded && (
+					<div className="space-y-6">
 							{isExpired && (
 								<Card hover={false} className="bg-warning-bg border-warning/20 p-4">
 									<div className="flex items-center gap-3 text-warning">
@@ -194,9 +179,8 @@ export default function JwtPage() {
 									Signature verification requires the secret key and is not performed here.
 								</p>
 							</Card>
-						</motion.div>
+						</div>
 					)}
-				</AnimatePresence>
 			</div>
 		</ToolLayout>
 	);

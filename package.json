@@ -19,7 +19,6 @@
 		"clsx": "^2.1.1",
 		"cmdk": "^1.1.1",
 		"diff-match-patch": "^1.0.5",
-		"framer-motion": "^12.25.0",
 		"lucide-react": "^0.562.0",
 		"next": "15.5.9",
 		"qrcode": "^1.5.4",

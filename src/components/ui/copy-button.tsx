@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,43 +30,27 @@ export function CopyButton({ text, className, variant = "default" }: CopyButtonP
 	};
 
 	return (
-		<motion.button
-			whileHover={{ scale: 1.05 }}
-			whileTap={{ scale: 0.95 }}
+		<button
 			onClick={handleCopy}
 			className={cn(
-				"relative inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+				"relative inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-95",
 				variants[variant],
 				copied ? "text-success" : "text-foreground-muted hover:text-foreground",
 				className
 			)}
 		>
-			<AnimatePresence mode="wait" initial={false}>
-				{copied ? (
-					<motion.span
-						key="check"
-						initial={{ opacity: 0, scale: 0.8 }}
-						animate={{ opacity: 1, scale: 1 }}
-						exit={{ opacity: 0, scale: 0.8 }}
-						className="flex items-center gap-2"
-					>
-						<Check className="w-4 h-4" />
-						<span>Copied!</span>
-					</motion.span>
-				) : (
-					<motion.span
-						key="copy"
-						initial={{ opacity: 0, scale: 0.8 }}
-						animate={{ opacity: 1, scale: 1 }}
-						exit={{ opacity: 0, scale: 0.8 }}
-						className="flex items-center gap-2"
-					>
-						<Copy className="w-4 h-4" />
-						<span>Copy</span>
-					</motion.span>
-				)}
-			</AnimatePresence>
-		</motion.button>
+			{copied ? (
+				<span className="flex items-center gap-2">
+					<Check className="w-4 h-4" />
+					<span>Copied!</span>
+				</span>
+			) : (
+				<span className="flex items-center gap-2">
+					<Copy className="w-4 h-4" />
+					<span>Copy</span>
+				</span>
+			)}
+		</button>
 	);
 }
 
@@ -91,41 +74,21 @@ export function CopyIconButton({ text, className }: CopyIconButtonProps) {
 	};
 
 	return (
-		<motion.button
-			whileHover={{ scale: 1.1 }}
-			whileTap={{ scale: 0.9 }}
+		<button
 			onClick={handleCopy}
 			className={cn(
-				"inline-flex items-center justify-center w-8 h-8 rounded-md transition-colors",
+				"inline-flex items-center justify-center w-8 h-8 rounded-md transition-all duration-150 active:scale-90",
 				"hover:bg-background-secondary",
 				copied ? "text-success" : "text-foreground-muted hover:text-foreground",
 				className
 			)}
 			title={copied ? "Copied!" : "Copy to clipboard"}
 		>
-			<AnimatePresence mode="wait" initial={false}>
-				{copied ? (
-					<motion.div
-						key="check"
-						initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
-						animate={{ opacity: 1, scale: 1, rotate: 0 }}
-						exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
-						transition={{ duration: 0.15 }}
-					>
-						<Check className="w-4 h-4" />
-					</motion.div>
-				) : (
-					<motion.div
-						key="copy"
-						initial={{ opacity: 0, scale: 0.5 }}
-						animate={{ opacity: 1, scale: 1 }}
-						exit={{ opacity: 0, scale: 0.5 }}
-						transition={{ duration: 0.15 }}
-					>
-						<Copy className="w-4 h-4" />
-					</motion.div>
-				)}
-			</AnimatePresence>
-		</motion.button>
+			{copied ? (
+				<Check className="w-4 h-4" />
+			) : (
+				<Copy className="w-4 h-4" />
+			)}
+		</button>
 	);
 }

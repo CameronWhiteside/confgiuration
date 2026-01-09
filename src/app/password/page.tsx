@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -165,11 +164,7 @@ export default function PasswordPage() {
 
 				{/* Strength Indicator */}
 				{passwords.length > 0 && (
-					<motion.div
-						initial={{ opacity: 0, y: -10 }}
-						animate={{ opacity: 1, y: 0 }}
-						className="flex items-center gap-4"
-					>
+					<div className="flex items-center gap-4">
 						<span className="text-sm text-foreground-muted">Strength:</span>
 						<div className="flex gap-1">
 							{[0, 1, 2, 3, 4].map((i) => (
@@ -183,47 +178,26 @@ export default function PasswordPage() {
 							))}
 						</div>
 						<span className="text-sm font-medium">{strengthLabels[strength]}</span>
-					</motion.div>
+					</div>
 				)}
 
 				{/* Password List */}
-				<AnimatePresence mode="wait">
-					{passwords.length > 0 ? (
-						<motion.div
-							key="list"
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -20 }}
-							className="space-y-2"
-						>
-							{passwords.map((password, i) => (
-								<motion.div
-									key={i}
-									initial={{ opacity: 0, x: -20 }}
-									animate={{ opacity: 1, x: 0 }}
-									transition={{ delay: i * 0.03 }}
-								>
-									<Card hover={false} className="p-3 flex items-center justify-between group">
-										<code className="font-mono text-sm text-foreground break-all">
-											{password}
-										</code>
-										<CopyIconButton text={password} />
-									</Card>
-								</motion.div>
-							))}
-						</motion.div>
-					) : (
-						<motion.div
-							key="empty"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							className="text-center py-16 text-foreground-muted"
-						>
-							Configure options and click Generate
-						</motion.div>
-					)}
-				</AnimatePresence>
+				{passwords.length > 0 ? (
+					<div className="space-y-2">
+						{passwords.map((password, i) => (
+							<Card key={i} hover={false} className="p-3 flex items-center justify-between group">
+								<code className="font-mono text-sm text-foreground break-all">
+									{password}
+								</code>
+								<CopyIconButton text={password} />
+							</Card>
+						))}
+					</div>
+				) : (
+					<div className="text-center py-16 text-foreground-muted">
+						Configure options and click Generate
+					</div>
+				)}
 
 				{/* Tips */}
 				<Card hover={false} className="bg-background-secondary/50 border-dashed">

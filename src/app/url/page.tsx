@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -100,22 +99,14 @@ export default function UrlPage() {
 							</div>
 						</div>
 
-						<AnimatePresence>
-							{error && (
-								<motion.div
-									initial={{ opacity: 0, y: -10 }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: -10 }}
-								>
-									<Card hover={false} className="bg-error-bg border-error/20 p-4">
-										<div className="flex items-center gap-3 text-error">
-											<AlertCircle className="w-5 h-5 flex-shrink-0" />
-											<code className="text-sm">{error}</code>
-										</div>
-									</Card>
-								</motion.div>
-							)}
-						</AnimatePresence>
+						{error && (
+						<Card hover={false} className="bg-error-bg border-error/20 p-4">
+							<div className="flex items-center gap-3 text-error">
+								<AlertCircle className="w-5 h-5 flex-shrink-0" />
+								<code className="text-sm">{error}</code>
+							</div>
+						</Card>
+					)}
 
 						<Button onClick={handleAction} disabled={!encodeInput}>
 							Encode
@@ -150,22 +141,14 @@ export default function UrlPage() {
 							</div>
 						</div>
 
-						<AnimatePresence>
-							{error && (
-								<motion.div
-									initial={{ opacity: 0, y: -10 }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: -10 }}
-								>
-									<Card hover={false} className="bg-error-bg border-error/20 p-4">
-										<div className="flex items-center gap-3 text-error">
-											<AlertCircle className="w-5 h-5 flex-shrink-0" />
-											<code className="text-sm">{error}</code>
-										</div>
-									</Card>
-								</motion.div>
-							)}
-						</AnimatePresence>
+						{error && (
+						<Card hover={false} className="bg-error-bg border-error/20 p-4">
+							<div className="flex items-center gap-3 text-error">
+								<AlertCircle className="w-5 h-5 flex-shrink-0" />
+								<code className="text-sm">{error}</code>
+							</div>
+						</Card>
+					)}
 
 						<Button onClick={handleAction} disabled={!decodeInput}>
 							Decode

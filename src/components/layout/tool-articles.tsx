@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { BookOpen, Tag, ArrowRight } from "lucide-react";
 import { type Article } from "@/lib/content";
 import { cn } from "@/lib/utils";
@@ -45,11 +44,10 @@ interface ArticleCardProps {
 
 function ArticleCard({ article }: ArticleCardProps) {
 	return (
-		<motion.article
-			whileHover={{ y: -2 }}
+		<article
 			className={cn(
 				"group rounded-xl border border-border bg-card overflow-hidden",
-				"transition-shadow duration-200 hover:shadow-lg hover:border-border-hover"
+				"transition-all duration-200 hover:shadow-lg hover:border-border-hover hover:-translate-y-0.5"
 			)}
 		>
 			<Link href={`/blog/${article.slug}`} className="block p-5">
@@ -75,8 +73,6 @@ function ArticleCard({ article }: ArticleCardProps) {
 					<ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
 				</div>
 			</Link>
-		</motion.article>
+		</article>
 	);
 }
-
-

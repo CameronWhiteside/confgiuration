@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, createContext, useContext, type ReactNode } from "react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface TabsContextValue {
@@ -73,21 +72,14 @@ export function TabsTrigger({ value, children, className }: TabsTriggerProps) {
 		<button
 			onClick={() => setActiveTab(value)}
 			className={cn(
-				"relative px-4 py-2 text-sm font-medium rounded-md transition-colors",
+				"relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-150",
 				isActive
-					? "text-foreground"
+					? "text-foreground bg-card shadow-sm"
 					: "text-foreground-muted hover:text-foreground",
 				className
 			)}
 		>
-			{isActive && (
-				<motion.div
-					layoutId="activeTab"
-					className="absolute inset-0 bg-card rounded-md shadow-sm"
-					transition={{ type: "spring", stiffness: 400, damping: 30 }}
-				/>
-			)}
-			<span className="relative z-10">{children}</span>
+			{children}
 		</button>
 	);
 }
@@ -104,13 +96,8 @@ export function TabsContent({ value, children, className }: TabsContentProps) {
 	if (activeTab !== value) return null;
 
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 10 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.2 }}
-			className={cn("mt-4", className)}
-		>
+		<div className={cn("mt-4", className)}>
 			{children}
-		</motion.div>
+		</div>
 	);
 }

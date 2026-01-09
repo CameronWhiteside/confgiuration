@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -124,35 +123,28 @@ export default function CronPage() {
 				</div>
 
 				{/* Status */}
-				<AnimatePresence mode="wait">
-					{input.trim() && (
-						<motion.div
-							key={isValid ? "valid" : "invalid"}
-							initial={{ opacity: 0, y: -10 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -10 }}
-						>
-							{isValid ? (
-								<Card hover={false} className="bg-success-bg border-success/20">
-									<div className="flex items-start gap-3">
-										<CheckCircle className="w-5 h-5 text-success mt-0.5" />
-										<div>
-											<p className="font-medium text-foreground">Valid Expression</p>
-											<p className="text-foreground-muted mt-1 capitalize">{explanation}</p>
-										</div>
+				{input.trim() && (
+					<>
+						{isValid ? (
+							<Card hover={false} className="bg-success-bg border-success/20">
+								<div className="flex items-start gap-3">
+									<CheckCircle className="w-5 h-5 text-success mt-0.5" />
+									<div>
+										<p className="font-medium text-foreground">Valid Expression</p>
+										<p className="text-foreground-muted mt-1 capitalize">{explanation}</p>
 									</div>
-								</Card>
-							) : (
-								<Card hover={false} className="bg-error-bg border-error/20">
-									<div className="flex items-center gap-3 text-error">
-										<AlertCircle className="w-5 h-5" />
-										<span>Invalid cron expression - must have exactly 5 fields</span>
-									</div>
-								</Card>
-							)}
-						</motion.div>
-					)}
-				</AnimatePresence>
+								</div>
+							</Card>
+						) : (
+							<Card hover={false} className="bg-error-bg border-error/20">
+								<div className="flex items-center gap-3 text-error">
+									<AlertCircle className="w-5 h-5" />
+									<span>Invalid cron expression - must have exactly 5 fields</span>
+								</div>
+							</Card>
+						)}
+					</>
+				)}
 
 				{/* Parts Breakdown */}
 				{isValid && parts && (

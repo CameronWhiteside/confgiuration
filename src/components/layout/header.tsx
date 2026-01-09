@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import { Search, Command } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { tools } from "@/lib/tools";
@@ -15,10 +14,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
 	const pathname = usePathname();
 
 	return (
-		<motion.header
-			initial={{ y: -20, opacity: 0 }}
-			animate={{ y: 0, opacity: 1 }}
-			transition={{ duration: 0.4, ease: [0.25, 0.4, 0.25, 1] }}
+		<header
 			className="sticky top-0 z-50 w-full border-b border-border glass"
 			role="banner"
 		>
@@ -30,10 +26,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
 						className="flex items-center gap-3 group"
 						aria-label="confgiuration - Home"
 					>
-						<motion.div
-							whileHover={{ scale: 1.02 }}
-							className="relative"
-						>
+						<div className="relative">
 							{/* Logo mark */}
 							<div
 								className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-purple to-accent-pink flex items-center justify-center"
@@ -43,7 +36,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
 									cf
 								</span>
 							</div>
-						</motion.div>
+						</div>
 						<span className="font-mono text-lg font-bold tracking-tight text-foreground">
 							confg<span className="text-primary">i</span>uration
 						</span>
@@ -89,9 +82,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
 					</nav>
 
 					{/* Search Trigger */}
-					<motion.button
-						whileHover={{ scale: 1.02 }}
-						whileTap={{ scale: 0.98 }}
+					<button
 						onClick={onOpenSearch}
 						aria-label="Search tools (Press Command K)"
 						aria-keyshortcuts="Meta+K"
@@ -99,7 +90,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
 							"flex items-center gap-3 px-3 py-2 rounded-lg",
 							"bg-background-secondary/50 hover:bg-background-secondary",
 							"border border-border hover:border-border-hover",
-							"text-foreground-muted transition-all duration-200"
+							"text-foreground-muted transition-all duration-150"
 						)}
 					>
 						<Search className="w-4 h-4" aria-hidden="true" />
@@ -110,9 +101,9 @@ export function Header({ onOpenSearch }: HeaderProps) {
 						>
 							<Command className="w-3 h-3" />K
 						</kbd>
-					</motion.button>
+					</button>
 				</div>
 			</div>
-		</motion.header>
+		</header>
 	);
 }

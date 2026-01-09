@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -133,22 +132,14 @@ export default function RegexPage() {
 				</div>
 
 				{/* Error Display */}
-				<AnimatePresence>
-					{error && (
-						<motion.div
-							initial={{ opacity: 0, y: -10 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -10 }}
-						>
-							<Card hover={false} className="bg-error-bg border-error/20 p-4">
-								<div className="flex items-center gap-3 text-error">
-									<AlertCircle className="w-5 h-5 flex-shrink-0" />
-									<code className="text-sm">{error}</code>
-								</div>
-							</Card>
-						</motion.div>
-					)}
-				</AnimatePresence>
+				{error && (
+					<Card hover={false} className="bg-error-bg border-error/20 p-4">
+						<div className="flex items-center gap-3 text-error">
+							<AlertCircle className="w-5 h-5 flex-shrink-0" />
+							<code className="text-sm">{error}</code>
+						</div>
+					</Card>
+				)}
 
 				{/* Test String */}
 				<Textarea
@@ -160,79 +151,63 @@ export default function RegexPage() {
 				/>
 
 				{/* Highlighted Matches */}
-				<AnimatePresence>
-					{highlightedText && highlightedText.length > 0 && (
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: 20 }}
-						>
-							<Card hover={false}>
-								<div className="flex items-center justify-between mb-3">
-									<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider">
-										Highlighted Matches
-									</h3>
-									<span className="flex items-center gap-2 text-sm text-success">
-										<CheckCircle className="w-4 h-4" />
-										{matches.length} {matches.length === 1 ? "match" : "matches"}
+				{highlightedText && highlightedText.length > 0 && (
+					<Card hover={false}>
+						<div className="flex items-center justify-between mb-3">
+							<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider">
+								Highlighted Matches
+							</h3>
+							<span className="flex items-center gap-2 text-sm text-success">
+								<CheckCircle className="w-4 h-4" />
+								{matches.length} {matches.length === 1 ? "match" : "matches"}
+							</span>
+						</div>
+						<div className="bg-background-secondary rounded-lg p-4 font-mono text-sm whitespace-pre-wrap break-all">
+							{highlightedText.map((part, i) =>
+								part.isMatch ? (
+									<span
+										key={i}
+										className="bg-primary/20 text-primary rounded px-0.5"
+									>
+										{part.text}
 									</span>
-								</div>
-								<div className="bg-background-secondary rounded-lg p-4 font-mono text-sm whitespace-pre-wrap break-all">
-									{highlightedText.map((part, i) =>
-										part.isMatch ? (
-											<span
-												key={i}
-												className="bg-primary/20 text-primary rounded px-0.5"
-											>
-												{part.text}
-											</span>
-										) : (
-											<span key={i}>{part.text}</span>
-										)
-									)}
-								</div>
-							</Card>
-						</motion.div>
-					)}
-				</AnimatePresence>
+								) : (
+									<span key={i}>{part.text}</span>
+								)
+							)}
+						</div>
+					</Card>
+				)}
 
 				{/* Match Details */}
-				<AnimatePresence>
-					{matches.length > 0 && (
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: 20 }}
-						>
-							<Card hover={false}>
-								<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider mb-3">
-									Match Details
-								</h3>
-								<div className="space-y-2">
-									{matches.map((m, i) => (
-										<div
-											key={i}
-											className="bg-background-secondary rounded-lg p-3 font-mono text-sm"
-										>
-											<div className="flex items-center gap-4">
-												<span className="text-foreground-muted">#{i + 1}</span>
-												<span className="text-primary font-medium">{m.match}</span>
-												<span className="text-foreground-muted text-xs">
-													index: {m.index}
-												</span>
-											</div>
-											{m.groups && Object.keys(m.groups).length > 0 && (
-												<div className="mt-2 text-xs text-foreground-muted">
-													Groups: {JSON.stringify(m.groups)}
-												</div>
-											)}
+				{matches.length > 0 && (
+					<Card hover={false}>
+						<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider mb-3">
+							Match Details
+						</h3>
+						<div className="space-y-2">
+							{matches.map((m, i) => (
+								<div
+									key={i}
+									className="bg-background-secondary rounded-lg p-3 font-mono text-sm"
+								>
+									<div className="flex items-center gap-4">
+										<span className="text-foreground-muted">#{i + 1}</span>
+										<span className="text-primary font-medium">{m.match}</span>
+										<span className="text-foreground-muted text-xs">
+											index: {m.index}
+										</span>
+									</div>
+									{m.groups && Object.keys(m.groups).length > 0 && (
+										<div className="mt-2 text-xs text-foreground-muted">
+											Groups: {JSON.stringify(m.groups)}
 										</div>
-									))}
+									)}
 								</div>
-							</Card>
-						</motion.div>
-					)}
-				</AnimatePresence>
+							))}
+						</div>
+					</Card>
+				)}
 			</div>
 		</ToolLayout>
 	);

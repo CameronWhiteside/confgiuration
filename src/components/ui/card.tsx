@@ -1,32 +1,29 @@
 "use client";
 
 import { forwardRef } from "react";
-import { motion, type HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export interface CardProps extends Omit<HTMLMotionProps<"div">, "children"> {
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 	hover?: boolean;
 	gradient?: boolean;
-	children?: React.ReactNode;
 }
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
 	({ className, hover = true, gradient = false, children, ...props }, ref) => {
 		return (
-			<motion.div
+			<div
 				ref={ref}
-				whileHover={hover ? { y: -2, transition: { duration: 0.2 } } : undefined}
 				className={cn(
 					"relative bg-card rounded-xl border border-border p-6",
-					"transition-all duration-300",
-					hover && "hover:shadow-lg hover:border-border-hover",
+					"transition-all duration-200",
+					hover && "hover:shadow-lg hover:border-border-hover hover:-translate-y-0.5",
 					gradient && "gradient-border",
 					className
 				)}
 				{...props}
 			>
 				{children}
-			</motion.div>
+			</div>
 		);
 	}
 );

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import { type FAQItem, generateFAQJsonLd } from "@/lib/faq";
 import { cn } from "@/lib/utils";
@@ -69,7 +68,7 @@ export function FAQSection({
 			{/* FAQ List */}
 			<div className="space-y-3" role="list">
 				{faqs.map((faq, index) => (
-					<FAQItem
+					<FAQItemComponent
 						key={index}
 						faq={faq}
 						isOpen={openIndex === index}
@@ -81,17 +80,17 @@ export function FAQSection({
 	);
 }
 
-interface FAQItemProps {
+interface FAQItemComponentProps {
 	faq: FAQItem;
 	isOpen: boolean;
 	onToggle: () => void;
 }
 
-function FAQItem({ faq, isOpen, onToggle }: FAQItemProps) {
+function FAQItemComponent({ faq, isOpen, onToggle }: FAQItemComponentProps) {
 	return (
 		<div
 			className={cn(
-				"rounded-xl border border-border bg-card overflow-hidden transition-shadow duration-200",
+				"rounded-xl border border-border bg-card overflow-hidden transition-all duration-200",
 				isOpen && "shadow-md border-border-hover"
 			)}
 			itemScope
@@ -104,7 +103,6 @@ function FAQItem({ faq, isOpen, onToggle }: FAQItemProps) {
 				onClick={onToggle}
 				className="w-full px-5 py-4 text-left flex items-start gap-4 hover:bg-background-secondary/50 transition-colors"
 				aria-expanded={isOpen}
-				aria-controls={`faq-answer-${faq.question.slice(0, 20).replace(/\s/g, "-")}`}
 			>
 				<div className="flex-1 min-w-0">
 					<h3
@@ -114,39 +112,35 @@ function FAQItem({ faq, isOpen, onToggle }: FAQItemProps) {
 						{faq.question}
 					</h3>
 				</div>
-				<motion.div
-					animate={{ rotate: isOpen ? 180 : 0 }}
-					transition={{ duration: 0.2 }}
-					className="flex-shrink-0 mt-0.5"
-				>
-					<ChevronDown className="w-5 h-5 text-foreground-muted" />
-				</motion.div>
+				<ChevronDown 
+					className={cn(
+						"w-5 h-5 text-foreground-muted flex-shrink-0 mt-0.5 transition-transform duration-200",
+						isOpen && "rotate-180"
+					)} 
+				/>
 			</button>
 
 			{/* Answer - Expandable */}
-			<AnimatePresence initial={false}>
-				{isOpen && (
-					<motion.div
-						initial={{ height: 0, opacity: 0 }}
-						animate={{ height: "auto", opacity: 1 }}
-						exit={{ height: 0, opacity: 0 }}
-						transition={{ duration: 0.2, ease: [0.25, 0.4, 0.25, 1] }}
-						id={`faq-answer-${faq.question.slice(0, 20).replace(/\s/g, "-")}`}
-						itemScope
-						itemProp="acceptedAnswer"
-						itemType="https://schema.org/Answer"
-					>
-						<div className="px-5 pb-4 border-t border-border">
-							<p
-								className="pt-4 text-foreground-muted leading-relaxed"
-								itemProp="text"
-							>
-								{faq.answer}
-							</p>
-						</div>
-					</motion.div>
+			<div
+				className={cn(
+					"grid transition-all duration-200",
+					isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
 				)}
-			</AnimatePresence>
+				itemScope
+				itemProp="acceptedAnswer"
+				itemType="https://schema.org/Answer"
+			>
+				<div className="overflow-hidden">
+					<div className="px-5 pb-4 border-t border-border">
+						<p
+							className="pt-4 text-foreground-muted leading-relaxed"
+							itemProp="text"
+						>
+							{faq.answer}
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 }

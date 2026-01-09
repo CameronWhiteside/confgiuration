@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import DiffMatchPatch from "diff-match-patch";
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { Textarea } from "@/components/ui/textarea";
@@ -70,51 +69,44 @@ export default function DiffPage() {
 					)}
 				</div>
 
-				<AnimatePresence>
-					{diff.length > 0 && (
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: 20 }}
-							className="space-y-4"
-						>
-							{/* Stats */}
-							<div className="flex gap-4 text-sm">
-								<span className="text-success">+{stats.added} added</span>
-								<span className="text-error">-{stats.removed} removed</span>
-							</div>
+				{diff.length > 0 && (
+					<div className="space-y-4">
+						{/* Stats */}
+						<div className="flex gap-4 text-sm">
+							<span className="text-success">+{stats.added} added</span>
+							<span className="text-error">-{stats.removed} removed</span>
+						</div>
 
-							{/* Diff Result */}
-							<Card hover={false}>
-								<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider mb-3">
-									Diff Result
-								</h3>
-								<div className="bg-background-secondary rounded-lg p-4 font-mono text-sm whitespace-pre-wrap break-all leading-relaxed">
-									{diff.map(([type, text], i) => {
-										if (type === 0) {
-											return <span key={i}>{text}</span>;
-										} else if (type === -1) {
-											return (
-												<span
-													key={i}
-													className="bg-error/20 text-error line-through decoration-error/50"
-												>
-													{text}
-												</span>
-											);
-										} else {
-											return (
-												<span key={i} className="bg-success/20 text-success">
-													{text}
-												</span>
-											);
-										}
-									})}
-								</div>
-							</Card>
-						</motion.div>
-					)}
-				</AnimatePresence>
+						{/* Diff Result */}
+						<Card hover={false}>
+							<h3 className="font-mono text-sm font-medium text-foreground-muted uppercase tracking-wider mb-3">
+								Diff Result
+							</h3>
+							<div className="bg-background-secondary rounded-lg p-4 font-mono text-sm whitespace-pre-wrap break-all leading-relaxed">
+								{diff.map(([type, text], i) => {
+									if (type === 0) {
+										return <span key={i}>{text}</span>;
+									} else if (type === -1) {
+										return (
+											<span
+												key={i}
+												className="bg-error/20 text-error line-through decoration-error/50"
+											>
+												{text}
+											</span>
+										);
+									} else {
+										return (
+											<span key={i} className="bg-success/20 text-success">
+												{text}
+											</span>
+										);
+									}
+								})}
+							</div>
+						</Card>
+					</div>
+				)}
 
 				{diff.length === 0 && !textA && !textB && (
 					<div className="text-center py-16 text-foreground-muted">
