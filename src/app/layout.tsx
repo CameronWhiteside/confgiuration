@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 	display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://confgiuration.dev";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://confgiuration.com";
 const siteName = "confgiuration";
 const siteDescription =
 	"Free online developer tools for encoding, formatting, generating, and transforming data. Base64, JSON, UUID, Hash, JWT, QR codes, and more. No sign-up required.";

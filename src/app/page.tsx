@@ -172,7 +172,7 @@ export default function Home() {
 								"@type": "WebApplication",
 								name: tool.name,
 								description: tool.description,
-								url: `https://confgiuration.dev${tool.href}`,
+								url: `https://confgiuration.com${tool.href}`,
 								applicationCategory: "DeveloperApplication",
 								offers: {
 									"@type": "Offer",

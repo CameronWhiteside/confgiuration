@@ -13,7 +13,7 @@ import { getTool } from "@/lib/tools";
 import { FAQSection } from "@/components/ui/faq";
 import { cn } from "@/lib/utils";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://confgiuration.dev";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://confgiuration.com";
 
 interface BlogPostPageProps {
 	params: Promise<{ slug: string }>;

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { tools, getTool, categories } from "./tools";
 import { getToolContent } from "./content";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://confgiuration.dev";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://confgiuration.com";
 const siteName = "confgiuration";
 
 // Extended tool descriptions for SEO

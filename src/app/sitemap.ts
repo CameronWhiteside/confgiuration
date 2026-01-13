@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { tools } from "@/lib/tools";
 import { getAllArticles } from "@/lib/content";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://confgiuration.dev";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://confgiuration.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
 	const currentDate = new Date();
